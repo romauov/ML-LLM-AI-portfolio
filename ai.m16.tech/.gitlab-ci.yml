@@ -1,0 +1,130 @@
+stages:
+  - linting
+  - install
+  - build
+  - deploy
+
+pylint:
+  stage: linting
+  image: registry.m16.tech/ml-services-python:latest
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  script:
+    - pip install -r requirements.txt
+    - pylint apps
+
+ui-lint:
+  stage: linting
+  image: node:19.5.0-alpine
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      changes:
+        - "apps/ui/*"
+        - "apps/ui/**/*"
+  cache:
+    - key:
+        files:
+          - apps/ui/yarn.lock
+      paths:
+        - .yarn-cache/
+        - apps/ui/node_modules
+  script:
+    - cd apps/ui
+    - yarn install --frozen-lockfile --no-progress
+    - yarn lint --no-fix
+
+docker-build:
+  stage: build
+  image: registry.m16.tech/docker-gitlab:1
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      changes:
+        - ".env"
+      when: manual
+  script:
+    - /bin/bash deploy/docker-build.sh
+
+ui-build:
+  stage: build
+  image: node:19.5.0-alpine
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      changes:
+        - "apps/ui/*"
+        - "apps/ui/**/*"
+      when: manual
+  cache:
+    - key:
+        files:
+          - apps/ui/yarn.lock
+      paths:
+        - .yarn-cache/
+        - apps/ui/node_modules
+  script:
+    - cd apps/ui
+    - yarn
+    - yarn build
+  artifacts:
+    expire_in: 10 day
+    paths:
+      - apps/ui/dist
+
+install:
+  stage: install
+  image: registry.m16.tech/ansible:1
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      changes:
+        - "deploy/hosts"
+        - "deploy/rsync_exclude.txt"
+        - "deploy/playbooks/docker.yml"
+        - "deploy/playbooks/services.yml"
+        - "deploy/playbooks/packages.yml"
+      when: manual
+  before_script:
+    - cd ./deploy
+    - cp $SSH_KEY id_rsa
+    - chmod 600 id_rsa
+    - export ANSIBLE_HOST_KEY_CHECKING=False
+  script:
+    - ansible-playbook -i hosts playbooks/docker.yml
+    - ansible-playbook -i hosts playbooks/services.yml
+    - ansible-playbook -i hosts playbooks/packages.yml
+
+ui-deploy:
+  stage: deploy
+  image: registry.m16.tech/ansible:1
+  dependencies:
+    - ui-build
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      changes:
+        - "apps/ui/*"
+        - "apps/ui/**/*"
+      when: manual
+  before_script:
+    - cd ./deploy
+    - cp $SSH_KEY id_rsa
+    - chmod 600 id_rsa
+    - export ANSIBLE_HOST_KEY_CHECKING=False
+  script:
+    - ansible-playbook -v -i hosts playbooks/ui-deploy.yml
+
+deploy:
+  stage: deploy
+  image: registry.m16.tech/ansible:1
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+  before_script:
+    - find apps/**/data/*.dvc | while read -r line; do echo "${line/\.dvc/}"; done >> deploy/rsync_exclude.txt
+    - cd ./deploy
+    - cp $SSH_KEY id_rsa
+    - chmod 600 id_rsa
+    - export ANSIBLE_HOST_KEY_CHECKING=False
+  script:
+    - ansible-playbook -v -i hosts playbooks/deploy.yml
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - apps/ui/dist

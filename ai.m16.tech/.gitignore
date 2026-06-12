@@ -1,0 +1,3 @@
+__pycache__
+config/.env
+apps/text_templater/promt.txt

@@ -1,0 +1,14 @@
+train:
+  batch_size: 200
+  # количество циклов обучения
+  num_epochs: 50
+data:
+  # длина текста
+  max_length: 15
+model:
+  # модель rubert
+  bert_name: 'cointegrated/rubert-tiny'
+  # вероятность обнуления элемента
+  dropout: 0.2
+  sgd_lr: 0.1
+  size_line: 512

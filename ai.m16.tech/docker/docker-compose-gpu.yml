@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  app:
+    image: registry.m16.tech/ml-services-python:${ML_SERVICES_PYTHON_IMAGE_TAG}
+    user: 1000:1000
+    runtime: nvidia
+    ports:
+      - "5000:5000"
+    environment:
+      - MODE=DEV
+      - PYTHONPATH=/app/apps
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - ..:/app
+      - app-cache:/home/user/.cache
+    command: python -m server.server dev
+
+volumes:
+  app-cache:

@@ -1,0 +1,7 @@
+#! /bin/bash
+# Запуск сервисов на проде
+
+# Получить из файла .env версию образа
+export $(grep -v '^#' .env | xargs)
+
+docker compose -f docker/docker-compose-prod.yml up --build

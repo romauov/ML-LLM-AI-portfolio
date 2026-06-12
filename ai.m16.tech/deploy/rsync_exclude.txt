@@ -1,0 +1,13 @@
+__pycache__
+/.dvc/cache
+/.dvc/tmp
+/log
+/apps/ui/dist
+/mlruns/.trash/
+/apps/airflow/logs/*
+/apps/airflow/config/*
+/apps/airflow/plugins/*
+/apps/file_hosting/*
+/apps/text_templater/templates_methods/.env
+/apps/text_templater/templates_methods/tables-for-llm-metrcis-1-9632561dab77.json
+apps/forecasting_result/*

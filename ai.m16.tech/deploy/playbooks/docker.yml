@@ -1,0 +1,65 @@
+# Установка docker
+---
+- hosts: all
+  become: true
+  vars:
+    DOCKER_REGISTRY_HOST: "{{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_HOST') }}"
+    DOCKER_REGISTRY_USER: "{{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_USER') }}"
+    DOCKER_REGISTRY_PASS: "{{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_PASS') }}"
+
+  tasks:
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce docker-compose-plugin
+      apt:
+        pkg:
+          - docker-ce
+          - docker-compose-plugin
+        state: latest
+        update_cache: true
+
+    - name: Install Docker Module for Python
+      pip:
+        name:
+          - docker
+          - docker-compose
+
+    - name: Enable docker.service
+      systemd:
+        name: docker.service
+        daemon_reload: true
+        enabled: true
+
+#    - name: Log into private registry and force re-authorization
+#      docker_login:
+#        registry: "{{ DOCKER_REGISTRY_HOST }}"
+#        username: "{{ DOCKER_REGISTRY_USER }}"
+#        password: "{{ DOCKER_REGISTRY_PASS }}"
+#        reauthorize: yes

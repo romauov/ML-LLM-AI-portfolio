@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: nginx:1.23.3-alpine
+    depends_on:
+      - app
+      - ui
+    ports:
+      - "5000:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+  app:
+    build: ..
+    user: 1000:1000
+    working_dir: /app/
+    environment:
+      - MODE=DEV
+      - PYTHONPATH=/app/apps
+    volumes:
+      - ..:/app
+      - app-cache:/home/user/.cache
+    command: python -m server.server dev
+  gradio:
+    build: ..
+    user: 1000:1000
+    working_dir: /app/
+    environment:
+      - MODE=DEV
+      - PYTHONPATH=/app/apps
+    volumes:
+      - ..:/app
+      - app-cache:/home/user/.cache
+    command: uvicorn server.server_gradio:app --reload --host 0.0.0.0
+#  mlflow:
+#    image: ghcr.io/mlflow/mlflow:v2.1.1
+#    working_dir: /app
+#    volumes:
+#      - ..:/app
+#    command: mlflow server --host 0.0.0.0 --static-prefix /mlflow
+  ui:
+    image: node:19.5.0-alpine
+    working_dir: /app
+    user: 1000:1000
+    volumes:
+      - ../apps/ui:/app
+    command: sh -c "yarn && yarn serve"
+volumes:
+  app-cache:

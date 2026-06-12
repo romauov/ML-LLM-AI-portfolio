@@ -1,0 +1,99 @@
+Flask
+gevent
+pylint
+numpy
+pandas
+dvc==3.26.1
+dvc-s3==2.23.0
+ruamel.yaml
+mlflow
+# pytorch_lightning==1.9.4
+sentry-sdk[flask]
+sentry-sdk[fastapi]
+gradio
+fastapi
+uvicorn
+clickhouse-driver
+mysql-connector-python==8.0.29
+dateparser
+psycopg2-binary
+
+# name_classifier
+alembic
+bson
+contourpy
+cycler
+fonttools
+kiwisolver
+opencv-python
+pillow
+pip-chill
+psycopg2
+# tensorflow==2.10.1
+# tensorflow-intel
+
+# product
+# torch==1.11.0
+# torchmetrics==0.11.3
+statistics
+huggingface_hub
+transformers
+sentencepiece
+sacremoses
+
+# ccn_based_driver_gaze
+# torchvision==0.12.0
+timm==0.4.5
+mtcnn==0.1.1
+
+# mediapipe_based_head_controller
+mediapipe==0.9.1.0
+
+# buyers_definition
+scikit-learn
+
+# robot-cv
+ultralytics==8.0.61
+albumentations
+pybboxes
+progress
+onnx==1.12.0
+nvidia-tensorrt
+onnxruntime-gpu
+onnxsim>=0.4.17
+openpyxl
+xlrd
+
+# Leads classification
+#spacy
+nltk
+natasha
+tqdm
+
+# text_templater
+openai==1.1.1
+gigachain==0.1.7.1
+langchain==0.1.7
+python-dotenv
+gspread
+oauth2client
+yandex-chain
+
+# knn_recommendations
+polars
+
+# digital_users_card
+tabulate
+
+# bert_recommendations
+faiss-cpu
+
+# forecasting
+neuralprophet==0.8.0
+optuna
+
+# farm_model
+plotly
+
+#tg-bot
+# aiogram==3.6.0

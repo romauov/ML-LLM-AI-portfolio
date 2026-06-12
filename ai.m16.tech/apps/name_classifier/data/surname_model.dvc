@@ -1,0 +1,5 @@
+outs:
+- md5: 03f009bc540a88bdf4e963a669adb0b0.dir
+  size: 38873998
+  nfiles: 4
+  path: surname_model

@@ -1,0 +1,2 @@
+[servers]
+ml-place ansible_host=10.0.3.172 ansible_user=server ansible_private_key_file=./id_rsa

@@ -1,0 +1,6 @@
+outs:
+- md5: 268da0db753bf5e0177d8f98632030ef.dir
+  size: 818014484
+  nfiles: 7
+  hash: md5
+  path: bert_recommendations

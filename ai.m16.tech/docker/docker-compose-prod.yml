@@ -1,0 +1,206 @@
+version: "3.8"
+
+x-airflow-common:
+  &airflow-common
+  # In order to add custom dependencies or upgrade provider packages you can use your extended image.
+  # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
+  # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
+  # image: apache/airflow:latest-python3.10
+  build: ../airflow_docker/.
+  environment:
+    &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
+    AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Moscow
+    AIRFLOW__SCHEDULER__CATCHUP_BY_DEFAULT: "False"
+    MODE: PROD
+    # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
+    # for other purpose (development, test and especially production usage) build/extend Airflow image.
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    PYTHONPATH: /app/apps
+  volumes:
+    - ../apps/airflow/dags:/opt/airflow/dags
+    - ../apps/airflow/logs:/opt/airflow/logs
+    - ../apps/airflow/config:/opt/airflow/config
+    - ../apps/airflow/plugins:/opt/airflow/plugins
+    - ../apps:/app/apps/
+  user:
+    "${AIRFLOW_UID:-1000}:0"
+  depends_on:
+    &airflow-common-depends-on
+    postgres:
+      condition: service_healthy
+
+services:
+  nginx:
+    image: nginx:1.23.3-alpine
+    depends_on:
+      - app
+      - gradio
+      - mlflow
+      - airflow-webserver
+      # - tg-bot
+    ports:
+      - "5000:80"
+    volumes:
+      - ./nginx/nginx-prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../apps/ui/dist:/app/ui:ro
+      - ../log/nginx:/var/log/nginx
+  app:
+    image: registry.m16.tech/ml-services-python:${ML_SERVICES_PYTHON_IMAGE_TAG}
+    environment:
+      - MODE=PROD
+      - PYTHONPATH=/app/apps
+    volumes:
+      - ..:/app
+      - app-cache:/home/user/.cache
+    command: python -m server.server
+  gradio:
+    image: registry.m16.tech/ml-services-python:${ML_SERVICES_PYTHON_IMAGE_TAG}
+    user: 1000:1000
+    working_dir: /app/
+    extra_hosts:
+      - "ai.m16.tech:{{INTERNAL_IP}}"
+    environment:
+      - MODE=DEV
+      - PYTHONPATH=/app/apps
+    volumes:
+      - ..:/app
+      - app-cache:/home/user/.cache
+    command: uvicorn server.server_gradio:app --host 0.0.0.0
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.1.1
+    working_dir: /app
+    volumes:
+      - ..:/app
+    command: mlflow server --host 0.0.0.0 --static-prefix /mlflow
+
+  # airflow
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://localhost:8080/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://localhost:8974/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+#  airflow-worker:
+#    <<: *airflow-common
+#    environment:
+#      <<: *airflow-common-env
+#      # Required to handle warm shutdown of the celery workers properly
+#      # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
+#      DUMB_INIT_SETSID: "0"
+#    restart: always
+#    depends_on:
+#      <<: *airflow-common-depends-on
+#      airflow-init:
+#        condition: service_completed_successfully
+#    volumes:
+#      - ../apps:/apps
+
+  airflow-triggerer:
+    <<: *airflow-common
+    command: triggerer
+    healthcheck:
+      test: [ "CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"' ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        mkdir -p /sources/logs /sources/dags /sources/plugins
+        chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
+        exec /entrypoint airflow version
+    environment:
+      <<: *airflow-common-env
+      _AIRFLOW_DB_MIGRATE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+      _PIP_ADDITIONAL_REQUIREMENTS: ''
+    restart: on-failure
+    user: "0:0"
+    volumes:
+      - ${AIRFLOW_PROJ_DIR:-.}:/sources
+
+  airflow-cli:
+    <<: *airflow-common
+    profiles:
+      - debug
+    environment:
+      <<: *airflow-common-env
+      CONNECTION_CHECK_MAX_COUNT: "0"
+    # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252
+    command:
+      - bash
+      - -c
+      - airflow
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "airflow" ]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+
+  # tg-bot:
+  #   build: ../tgbot_docker/.
+  #   volumes:
+  #   - ../apps:/app/apps
+  #   - ../log:/app/log
+  #   environment: 
+  #     PYTHONPATH: /app/apps
+  #   depends_on:
+  #     - app
+
+volumes:
+  app-cache:
+  postgres-db-volume:
+  apps:
+    external: true

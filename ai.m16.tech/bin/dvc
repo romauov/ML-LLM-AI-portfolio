@@ -1,0 +1,4 @@
+#! /bin/bash
+# Контроль версий для моделей и датасетов
+
+docker run -it --rm -v $(pwd):"/app" -w="/app" registry.m16.tech/dvc:1 dvc $@

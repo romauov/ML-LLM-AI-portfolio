@@ -1,0 +1,13 @@
+# Деплой vue на сервер ml-place
+---
+- hosts: all
+  become: true
+
+  tasks:
+    - name: Синхронизация файлов ui
+      ansible.posix.synchronize:
+        src: ../../../apps/ui/dist
+        dest: /app/apps/ui
+        private_key: ../id_rsa
+        delete: true
+        recursive: true

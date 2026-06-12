@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:alpine3.15-bleeding
+    restart: always
+    volumes:
+      - gitlab-runner-data:/home/gitlab_ci_multi_runner/data
+      - ./config/:/etc/gitlab-runner/
+      - /var/run/docker.sock:/var/run/docker.sock
+  registry:
+    restart: always
+    image: registry:2.4.1
+    ports:
+    - 5000:5000
+    volumes:
+      - registry-data:/registry
+      - ./auth:/auth
+    environment:
+      - REGISTRY_LOG_LEVEL=info
+      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/registry
+      - REGISTRY_HTTP_ADDR=0.0.0.0:5000
+      - REGISTRY_AUTH=htpasswd
+      - REGISTRY_AUTH_HTPASSWD_REALM=Registry
+      - REGISTRY_AUTH_HTPASSWD_PATH=/auth/password
+
+volumes:
+  gitlab-runner-data:
+  registry-data:

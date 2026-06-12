@@ -1,0 +1,7 @@
+#! /bin/bash
+
+export $(grep -v '^#' config/.env | xargs)
+
+docker-compose exec app bash -c "sshpass -p \"$SSH_PASSWORD\" ssh -o StrictHostKeyChecking=no -fN -L 9000:localhost:9000 $SSH_USER@meatinfo.ru -p2225"
+docker-compose exec app bash -c "sshpass -p \"$SSH_PASSWORD\" ssh -o StrictHostKeyChecking=no -fN -L 3306:db:3306 $SSH_USER@meatinfo.ru -p2225"
+docker-compose exec app bash -c "sshpass -p \"$SSH_PASSWORD\" ssh -o StrictHostKeyChecking=no -fN -L 3307:m16dbhost:3306 $SSH_USER@meatinfo.ru -p2225"

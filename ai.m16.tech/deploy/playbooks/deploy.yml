@@ -1,0 +1,32 @@
+# Деплой сервисов на сервер ml-place
+---
+- hosts: all
+  become: true
+
+  tasks:
+    - name: Синхронизация файлов
+      ansible.posix.synchronize:
+        src: ../../../
+        dest: /app/
+        private_key: ../id_rsa
+        delete: true
+        recursive: true
+        rsync_opts:
+          - "--exclude-from=/builds/m16tech/ai.m16.tech/deploy/rsync_exclude.txt"
+
+    - name: Загрузка docker образов
+      become: True
+      shell:
+        cmd: "export $(grep -v '^#' .env | xargs) && docker pull registry.m16.tech/ml-lib:3 && docker-compose -f docker/docker-compose-prod.yml pull"
+        chdir: /app
+
+    - name: Получение моделей и дадасетов из dvc
+      become: True
+      shell:
+        cmd: "docker run -it --rm -v $(pwd):'/app' -w='/app' registry.m16.tech/dvc:1 dvc pull --force"
+        chdir: /app
+
+    - name: Перезагрузка сервиса app.service
+      ansible.builtin.systemd:
+        name: app.service
+        state: restarted

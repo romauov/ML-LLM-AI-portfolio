@@ -1,0 +1,42 @@
+---
+- hosts: all
+  become: true
+  vars:
+    DOCKER_REGISTRY_HOST: "{{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_HOST') }}"
+    DOCKER_REGISTRY_USER: "{{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_USER') }}"
+    DOCKER_REGISTRY_PASS: "{{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_PASS') }}"
+
+  tasks:
+    - name: down container
+      become: True
+      shell:
+        cmd: "docker-compose down"
+        chdir: /app
+
+    - name: add files app
+      copy:
+        src: ../app
+        dest: /
+        directory_mode: yes
+
+    - name: pull container
+      become: True
+      shell:
+        cmd: "docker-compose pull"
+        chdir: /app
+
+    - name: restart service app
+      ansible.builtin.systemd:
+        name: app.service
+        state: restarted
+
+    - name: Pause for 10 seconds
+      ansible.builtin.pause:
+        seconds: 10
+
+    - name: Log into private registry and force re-authorization
+      docker_login:
+        registry: "{{ DOCKER_REGISTRY_HOST }}"
+        username: "{{ DOCKER_REGISTRY_USER }}"
+        password: "{{ DOCKER_REGISTRY_PASS }}"
+        reauthorize: yes

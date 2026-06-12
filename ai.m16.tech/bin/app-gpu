@@ -1,0 +1,7 @@
+#! /bin/bash
+# Консоль контейнера python с поддержкой gpu
+
+# Получить из файла .env версию образа
+export $(grep -v '^#' .env | xargs)
+
+docker-compose -f docker/docker-compose-gpu.yml run app bash

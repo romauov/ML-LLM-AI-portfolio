@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Прототип модуля определения вида продукции по фрагменту текста</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+</head>
+<script>
+    objectResult = () => ({mtype: null, part: null, ice_status: null, gost: null, ty: null})
+
+    const listModels = [
+        'cointegrated/rubert-tiny',
+        'cointegrated/rubert-tiny2',
+    ]
+
+    window.onload = function () {
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+                    loading: false,
+                    text: '',
+                    testTarget: '',
+                    results: listModels.reduce((a, v) => ({ ...a, [v]: objectResult()}), {})
+                }
+            },
+            methods: {
+                async testText() {
+                    const res = await $.post('/api/product/test-text')
+                    const result = JSON.parse(res)
+                    this.text = result.text
+                    this.testTarget = result.mtype + ', ' + result.part + ', ' + result.ice_status + ', ' + result.gost + ', ' + result.ty
+                },
+                async detect(model) {
+                    this.loading = true
+                    const res = await $.post('/api/product/product-detect', {text: this.text, model});
+                    this.results[model] = JSON.parse(res)
+                    this.loading = false
+                }
+            }
+        })
+    }
+
+</script>
+<body>
+    <div style="margin: auto; margin-top: 50px; text-align: center; width: 800px">
+        <div id="app">
+            <button class="btn btn-secondary" :disabled="loading" @click="testText()">Случайный образец</button>
+            <div v-text="testTarget" style="height: 30px; margin-top: 5px;"></div>
+            <textarea v-model="text" :disabled="loading" class="form-control" rows="5" cols="50"></textarea>
+            <table class="table">
+                <tr>
+                    <th>Модель</th>
+                    <th>Вид</th>
+                    <th>Разруб</th>
+                    <th>Терм. сост</th>
+                    <th>Гост</th>
+                    <th>Ту</th>
+                </tr>
+                <tr v-for="(model, index) in Object.keys(results)" :key="index">
+                    <td align="left">
+                        <button v-text="model"
+                                :disabled="loading"
+                                class="btn btn-outline-secondary"
+                                @click="detect(model)"
+                        ></button>
+                    </td>
+                    <td v-for="(type, typeIndex) in Object.keys(results[model])" :key="typeIndex">
+                        <div v-if="results[model][type]">
+                            <div v-text="results[model][type].value"></div>
+                            <div v-text="results[model][type].proba"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

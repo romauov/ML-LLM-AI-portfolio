@@ -1,0 +1,34 @@
+# Добавление сервиса systemd для запуска docker compose
+---
+- hosts: all
+  become: true
+
+  tasks:
+    - name: add service app
+      copy:
+        dest: /etc/systemd/system/app.service
+        content: |
+          [Unit]
+          Description=Docker Compose Service
+          Requires=docker.service
+          [Service]
+          User=server
+          Group=server
+          Restart=always
+          RestartSec=30
+          WorkingDirectory=/app
+          ExecStart=/usr/bin/env sudo ./bin/run-prod
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: enable service app
+      ansible.builtin.systemd:
+        name: app.service
+        enabled: yes
+        masked: no
+
+    - name: start service app
+      ansible.builtin.systemd:
+        name: app.service
+        daemon_reload: yes
+        state: started

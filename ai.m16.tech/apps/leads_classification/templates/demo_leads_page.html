@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask App</title>
+</head>
+<body>
+    <form  method="POST" action="/api/leads_classification">
+        <label for="text">Введите текст</label>
+        <textarea id="text" name="text"> </textarea>
+        <br>
+        <br>
+        <label for="option">Выбирете модель:</label>
+        <select id="option" name="option">
+            <option value="bert">Bert</option>
+            <option selected="selected" value="spacy">Spacy</option>
+        </select>
+        <br>
+        <br>
+        <button type="submit">Получить предсказание</button>
+
+        {% if predict %}
+            <p>
+                Предсказание: <b>{{ predict }}</b>
+                <br>
+                Модель: <b>{{ model }}</b>
+                <br>
+                Текст: <b>{{ text }}</b>
+            </p>
+        {% else %}
+            <p>Предсказание: Введите текст и нажимите кнопку <i>Получить предсказание</i></p>
+        {% endif %}
+    </form>
+</body>
+</html>

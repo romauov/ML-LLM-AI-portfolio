@@ -1,0 +1,2 @@
+[servers]
+gitlab_runner ansible_host=localhost ansible_port=22 ansible_user=server ansible_private_key_file=./server_id_rsa

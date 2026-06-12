@@ -1,0 +1,19 @@
+# import matplotlib.pyplot as plt
+# from sklearn.metrics import roc_curve,  precision_recall_curve
+
+
+# def plot_pr_curve(test_y, predictions):
+#     precision, recall, _ = precision_recall_curve(test_y, predictions)
+#     plt.plot(recall, precision, marker='.', label='TextCat')
+#     plt.xlabel('Recall')
+#     plt.ylabel('Precision')
+#     plt.legend()
+#     plt.show()
+
+# def plot_roc_curve(test_y, predictions):
+#     fpr, tpr, _ = roc_curve(test_y, predictions)
+#     plt.plot(fpr, tpr, marker='.', label='TextCat')
+#     plt.xlabel('False Positive Rate')
+#     plt.ylabel('True Positive Rate')
+#     plt.legend()
+#     plt.show()

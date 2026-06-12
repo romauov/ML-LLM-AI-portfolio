@@ -1,0 +1,9 @@
+#! /bin/bash
+# Консоль контейнера python с установкой пакетов
+
+# Получить из файла .env версию образа
+export $(grep -v '^#' .env | xargs)
+
+docker pull registry.m16.tech/ml-lib:3
+docker-compose -f docker/docker-compose-req.yml build app
+docker-compose -f docker/docker-compose-req.yml run app bash
