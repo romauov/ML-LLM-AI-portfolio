@@ -1,0 +1,11 @@
+aiogram
+httpx
+jpype1
+openai
+openpyxl
+pandas
+pydantic_settings
+python-docx
+requests
+tabula-py
+xlrd

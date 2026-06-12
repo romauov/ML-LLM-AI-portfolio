@@ -1,0 +1,10 @@
+services:  
+  bot:  
+    build: .
+    image: tg-bots:latest
+    container_name: tg-bots
+    restart: always  
+    env_file:  
+      - .env  
+    volumes:  
+      - .:/app 
