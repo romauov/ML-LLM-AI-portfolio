@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+httpx
+pydantic
+pydantic_settings
+openai
+requests
+aiofiles
+apscheduler
