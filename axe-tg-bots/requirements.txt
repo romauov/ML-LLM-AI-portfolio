@@ -1,0 +1,13 @@
+aiogram
+httpx
+openai
+pandas
+pydantic_settings
+requests
+tabulate
+fastapi
+uvicorn
+PyMySQL
+SQLAlchemy
+google-api-python-client
+google-auth

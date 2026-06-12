@@ -1,0 +1,12 @@
+services:  
+  bot:  
+    build: .
+    image: axe-tg-bots:latest
+    container_name: axe-tg-bots
+    restart: no  
+    env_file:  
+      - .env
+    volumes:  
+      - .:/app
+    ports:
+      - "8181:81"

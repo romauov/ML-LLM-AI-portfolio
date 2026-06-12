@@ -1,0 +1,8 @@
+**/__pycache__/
+.env
+/venv/
+.vscode/
+.venv/
+**/**.json
+.gigaide/
+.idea/
