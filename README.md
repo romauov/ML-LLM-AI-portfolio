@@ -280,6 +280,12 @@ FastAPI service for generating quick email replies to marketing campaigns and co
 </tr>
 </table>
 
+## 6. Yandex ML Contests
+
+Участие в трёх контестах от Яндекс: AI-агенты (LangGraph), машинный перевод (Gemma-4, NLLB), ML Challenge (головоломки, NVS, LLM inference).
+
+**[→ projects/yandex/](./projects/yandex/)** — отдельный репозиторий: [github.com/romauov/yandex-contests](https://github.com/romauov/yandex-contests)
+
 ---
 
 *Portfolio repository: [github.com/romauov/ML-LLM-AI-portfolio](https://github.com/romauov/ML-LLM-AI-portfolio)*
