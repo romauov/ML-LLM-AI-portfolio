@@ -1,0 +1,11 @@
+pandas==2.2.3
+sqlalchemy==2.0.37
+pymysql==1.1.1
+pydantic-settings==2.7.1
+pydantic==2.10.6
+numpy==1.26.4
+python-multipart==0.0.20
+omegaconf==2.3.0
+python-dateutil==2.9.0.post0
+rq==2.7.0
+redis==7.2.1

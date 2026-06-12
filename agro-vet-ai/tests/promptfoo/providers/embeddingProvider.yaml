@@ -1,0 +1,6 @@
+id: openai:embeddings:text-embedding-3-small
+label: embedding-provider
+config:
+  apiBaseUrl: {{env.VSEGPT_BASE_URL}}
+  apiKey: {{env.VSEGPT_API_KEY}}
+  model: text-embedding-3-small

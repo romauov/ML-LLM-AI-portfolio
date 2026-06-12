@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # MCP сервер в HTTP режиме (для удаленного доступа)
+  mcp-server-http:
+    build: .
+    container_name: vetretro-mcp-http
+    ports:
+      - "8765:8765"
+    env_file:
+      - .env
+    environment:
+      # Переопределение переменных окружения (если нужно)
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    restart: unless-stopped
+    networks:
+      - vetretro-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8765/health').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # MCP сервер в stdio режиме (для локального использования с Claude Desktop)
+  # Этот сервис запускается отдельно через docker run, а не через compose up
+  # Пример: docker-compose run --rm mcp-server-stdio
+  mcp-server-stdio:
+    build: .
+    container_name: vetretro-mcp-stdio
+    env_file:
+      - .env
+    command: ["python", "run_stdio.py"]
+    stdin_open: true
+    tty: true
+    networks:
+      - vetretro-net
+    profiles:
+      - stdio  # Не запускается автоматически при docker-compose up
+
+networks:
+  vetretro-net:
+    driver: bridge

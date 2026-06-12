@@ -1,0 +1,30 @@
+module: "ranking_evaluation"
+description: "Оценка качества ranking — qwen3-embedding-4b"
+
+dataset: "tests/deepeval/ranking_datasets/librarian_ground_truth.json"
+
+# Конфигурация БД и поиска
+ranking:
+  table: "knowledge_base_chunks"
+  embedding_column: "embedding_qwen3_embedding_4b"
+  doc_limit: 10
+  similarity_threshold: 0.75
+
+# Модель для векторизации запросов
+embedding:
+  active_provider: "openrouter"   # lmstudio | vsegpt | openrouter
+  # эмбеддинговые модели qwen3 обучены ассиметрично, поэтому при получении эмбеддинга запроса нужно добавлять префикс с инструкцией
+  query_instruction: "Instruct: Given a veterinary or agricultural query, retrieve relevant knowledge base passages that answer the query"
+
+  providers:
+    lmstudio:
+      base_url: "http://{{LMSTUDIO_HOST}}:1234/v1"
+      model: "text-embedding-qwen3-embedding-4b"
+    openrouter:
+      model: "qwen/qwen3-embedding-4b"
+
+# Пороги метрик (pass/fail)
+metrics_thresholds:
+  precision_at_k: 0.3
+  mrr: 1.0
+  ndcg_at_k: 0.5

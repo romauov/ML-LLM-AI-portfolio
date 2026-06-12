@@ -1,0 +1,4 @@
+requests==2.32.3
+pydantic==2.11.4
+mcp==1.8.1
+click==8.2.0

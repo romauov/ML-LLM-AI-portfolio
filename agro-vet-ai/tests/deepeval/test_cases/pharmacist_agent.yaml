@@ -1,0 +1,79 @@
+module: "pharmacist_agent_tests"
+description: "Тесты для агента-фармацевта: поиск по названию, по условиям, по действующему веществу"
+
+test_cases:
+
+  - id: pharmacist_contraindications_pulmokit
+    description: Запрос противопоказаний конкретного препарата.
+    query: "Какие противопоказания у препарата Пульмокит?"
+    expected_criteria:
+      - "Информация относится к препарату Пульмокит"
+      - "Перечислены конкретные противопоказания к применению"
+      - "Упомянуты ограничения по возрасту животных или категории животных, которым препарат противопоказан"
+      - "Ответ не содержит информации о других препаратах"
+    expected_strings_all:
+      - "Пульмокит"
+      - "Источник: инструкция к препарату Пульмокит"
+
+
+  - id: pharmacist_condition_search_mycoplasma_swine
+    description: Поиск препаратов по заболеванию с фильтром по виду животного.
+    query: "Подбери препараты для лечения микоплазмоза свиней"
+    expected_criteria:
+      - "Предоставлен список препаратов"
+      - "Препараты относятся к категории, применимой для свиней"
+      - "Для каждого препарата указано торговое название"
+      - "Упомянуто действующее вещество или фармакологическая группа хотя бы для одного препарата"
+    expected_strings:
+      - "Микоплазмоз"
+      - "Mycoplasmosis"
+      - "Mycoplasma gallisepticum infection"
+
+
+  - id: pharmacist_active_substance_dosing_tilozin
+    description: Поиск препаратов с конкретным действующим веществом и запрос дозировок.
+    query: "Какие препараты содержат тилозин и каковы дозировки для кур?"
+    expected_criteria:
+      - "Перечислены препараты, содержащие тилозин (тилозина тартрат или тилозин)"
+      - "Указаны торговые названия препаратов"
+      - "Препараты относятся к категории, применимой для кур"
+      - "Указаны доизровки"
+      - "Указаны производители"
+    expected_strings:
+      - "тилозин"
+      - "тилозина тартрат"
+
+
+  - id: pharmacist_search_by_manufacturer_nita_farm
+    description:
+    query: "Найди торговое название препарата от производеля Nita-farm с дорамектином"
+    expected_criteria:
+      - "Указано торговое название препарата 'Мерадок'"
+      - "Указаны производитель 'Nita-farm'"
+    expected_strings_all:
+      - "дорамектин"
+      - "Nita-farm"
+      - "Мерадок"
+
+
+metrics_config:
+  geval_quality:
+    provider: "openrouter"
+    model: "openai/gpt-4o-mini"
+    threshold: 0.7
+
+  answer_relevancy:
+    provider: "openrouter"
+    model: "openai/gpt-4o-mini"
+    threshold: 0.7
+
+  faithfulness:
+    provider: "openrouter"
+    model: "openai/gpt-4o-mini"
+    threshold: 0.5
+
+  icontains_any:
+    threshold: 1.0
+
+  icontains_all:
+    threshold: 1.0

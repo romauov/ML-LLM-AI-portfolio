@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="15" skipped="0" tests="21" time="285.012" timestamp="2026-05-21T21:10:46.296788+04:00" hostname="endevour"><testcase classname="tests.pytest.eval.test_agent.TestGeneralQuestions" name="test_capabilities" time="16.328" /><testcase classname="tests.pytest.eval.test_agent.TestSwineDiagnosis" name="test_streptococcosis_symptoms" time="44.204" /><testcase classname="tests.pytest.eval.test_agent.TestSwineDiagnosis" name="test_prrs_symptoms" time="30.289" /><testcase classname="tests.pytest.eval.test_agent.TestSwineDiagnosis" name="test_edema_disease_symptoms" time="101.849" /><testcase classname="tests.pytest.eval.test_agent.TestSwineDiagnosis" name="test_app_symptoms" time="33.937" /><testcase classname="tests.pytest.eval.test_agent.TestSwineDiagnosis" name="test_mycoplasmosis_swine_symptoms" time="40.173" /><testcase classname="tests.pytest.eval.test_agent.TestAvianDiagnosis" name="test_avian_influenza_symptoms" time="12.212"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['грипп', 'influenza', 'h5', 'h7', 'впгп', 'hpai'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestAvianDiagnosis object at 0x7ffa5ca03ed0&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_avian_influenza_symptoms(self, api_config):
+        """
+        Высокопатогенный птичий грипп (ВПГП) — внезапная массовая гибель с цианозом.
+        knowledge/diagnostics/avian_diseases/list/avian_influenza.yml
+        """
+        _REFERENCE_ANSWER = (
+            "&lt;b&gt;Наиболее вероятные заболевания:&lt;/b&gt;\n\n"
+            "1. &lt;b&gt;Высокопатогенный птичий грипп (ВПГП, &lt;i&gt;Influenza A virus&lt;/i&gt;, H5/H7)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Внезапная гибель 80% поголовья за 2 дня + выраженный цианоз гребня "
+            "и серёжек + отёк головы и шеи + геморрагии между суставами лап + тёмно-красная кожа — "
+            "типичная картина HPAI.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «Высокопатогенный грипп птиц (H5/H7) характеризуется стремительной "
+            "гибелью 90–100% поголовья; клинически — цианоз гребня и серёжек, отёк головы и шеи, "
+            "геморрагии на ногах, резкое угнетение; иногда птица гибнет без предшествующих признаков.»\n\n"
+            "2. &lt;b&gt;Болезнь Ньюкасла (&lt;i&gt;Avian paramyxovirus-1&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Высокая летальность и цианоз возможны при велогенной форме болезни "
+            "Ньюкасла, однако отёк головы и массовая гибель за 2 дня характернее для ВПГП.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «Велогенная висцеротропная форма болезни Ньюкасла может давать "
+            "геморрагическое поражение ЖКТ, нервные признаки, высокую летальность; отёк головы менее типичен.»\n\n"
+            "3. &lt;b&gt;Хламидиоз птиц (&lt;i&gt;Chlamydia psittaci&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Хламидиоз может давать высокую летальность и системное поражение, "
+            "однако отёк головы, цианоз гребня и геморрагии между суставами лап не характерны..\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «Хламидиоз включён в дифференциальный ряд при подозрении на "
+            "высокопатогенный птичий грипп; клиническая картина менее специфична.»\n\n"
+            "&lt;u&gt;Вывод:&lt;/у&gt; Наиболее вероятен &lt;b&gt;ВПГП (H5/H7, HPAI, грипп птиц)&lt;/b&gt;. "
+            "Требуются экстренная изоляция стада и уведомление ветеринарных властей. "
+            "Диагностика: ПЦР мазков трахеи/клоаки, вирусологическое исследование."
+        )
+    
+        data = submit(
+            api_config,
+            "На птицефабрике внезапная гибель 80% кур за 2 дня. У павших — выраженный цианоз "
+            "гребня и сережек, отёк головы и шеи, геморрагии между суставами лап, "
+            "тёмно-красная кожа. Какой предварительный диагноз?"
+        )
+    
+&gt;       assert_contains(data, ["грипп", "influenza", "h5", "h7", "впгп", "hpai"])
+
+tests/pytest/eval/test_agent.py:309: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 12.210323949999292, 'query': 'На птицефабрике внезапная гибель 80% кур за 2 дня. У павших — выраженный циа...-красная кожа. Какой предварительный диагноз?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['грипп', 'influenza', 'h5', 'h7', 'впгп', 'hpai']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['грипп', 'influenza', 'h5', 'h7', 'впгп', 'hpai'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestAvianDiagnosis" name="test_infectious_bursal_disease_symptoms" time="0.482"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['гамборо', 'гумборо', 'бурсит', 'bursal', 'ibd', 'фабрициев'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestAvianDiagnosis object at 0x7ffa5c54c550&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_infectious_bursal_disease_symptoms(self, api_config):
+        """
+        Болезнь Гамборо (ИББ) — цыплята 3-6 недель, поражение фабрициевой сумки.
+        knowledge/diagnostics/avian_diseases/list/infectious_bursal_disease.yml
+        """
+        _REFERENCE_ANSWER = (
+            "&lt;b&gt;Наиболее вероятные заболевания:&lt;/b&gt;\n\n"
+            "1. &lt;b&gt;Болезнь Гамборо (ИББ, инфекционный бурсит, &lt;i&gt;Infectious bursal disease virus&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Угнетение, обезвоживание у бройлеров 3–4 недель + увеличенная фабрициева "
+            "сумка с кровоизлияниями + кровоизлияния в бедренные мышцы — характерная картина ИББ: "
+            "вирус поражает фабрициеву сумку, вызывая её воспаление, а затем атрофию.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «Болезнь Гамборо характеризуется поражением фабрициевой сумки, что ведёт "
+            "к её воспалению и атрофии. Вирус ИББ наиболее опасен для цыплят в возрасте от 2 до 20 недель. "
+            "При вскрытии: увеличенная фабрициева сумка, возможны кровоизлияния; кровоизлияния в мышцы, "
+            "дегидратация, потемнение и депигментация мышц.»\n\n"
+            "2. &lt;b&gt;Болезнь Марека (&lt;i&gt;Gallid alphaherpesvirus 2&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Угнетение у бройлеров 3–4 недель возможно при Марека, однако поражение "
+            "фабрициевой сумки с кровоизлияниями и выраженное обезвоживание для него не характерны.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «Болезнь Марека включена в дифференциальный ряд при инфекционной "
+            "бурсальной болезни; для Марека типичны нервные парезы и лимфомы внутренних органов.»\n\n"
+            "3. &lt;b&gt;Болезнь Ньюкасла (&lt;i&gt;Avian paramyxovirus-1&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Угнетение и высокая летальность у бройлеров возможны при болезни Ньюкасла, "
+            "однако специфическое поражение фабрициевой сумки с кровоизлияниями и мышечными геморрагиями "
+            "не характерны для этого заболевания.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «Болезнь Ньюкасла включена в дифференциальный ряд при инфекционной "
+            "бурсальной болезни; характерные для ИББ изменения фабрициевой сумки при Ньюкасле не описаны.»\n\n"
+            "&lt;u&gt;Вывод:&lt;/у&gt; Наиболее вероятна &lt;b&gt;болезнь Гамборо (ИББ, IBD)&lt;/b&gt;. "
+            "Рекомендованы ИФА, ОТ-ПЦР, гистопатология фабрициевой сумки (атрофия, лимфоцитарное истощение)."
+        )
+    
+        data = submit(
+            api_config,
+            "У бройлеров в возрасте 3-4 недели внезапное угнетение, взъерошенность, "
+            "белая водянистая диарея, обезвоживание. При вскрытии — увеличенная фабрициева "
+            "сумка с кровоизлияниями, кровоизлияния в бедренные мышцы. Какой диагноз?"
+        )
+    
+&gt;       assert_contains(data, ["гамборо", "гумборо", "бурсит", "bursal", "ibd", "фабрициев"])
+
+tests/pytest/eval/test_agent.py:348: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.4806060310002067, 'query': 'У бройлеров в возрасте 3-4 недели внезапное угнетение, взъерошенность, белая...овоизлияния в бедренные мышцы. Какой диагноз?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['гамборо', 'гумборо', 'бурсит', 'bursal', 'ibd', 'фабрициев']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['гамборо', 'гумборо', 'бурсит', 'bursal', 'ibd', 'фабрициев'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestAvianDiagnosis" name="test_infectious_bronchitis_symptoms" time="0.728"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['бронхит', 'bronchitis', 'coronavirus', 'ибк', 'ib'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestAvianDiagnosis object at 0x7ffa5c514fc0&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_infectious_bronchitis_symptoms(self, api_config):
+        """
+        Инфекционный бронхит птиц — респираторная и нефропатогенная формы.
+        knowledge/diagnostics/avian_diseases/list/avian_infectious_bronchitis.yml
+        """
+        _REFERENCE_ANSWER = (
+            "&lt;b&gt;Наиболее вероятные заболевания:&lt;/b&gt;\n\n"
+            "1. &lt;b&gt;Инфекционный бронхит кур (ИБК, &lt;i&gt;Avian coronavirus&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Сочетание респираторных признаков (хрипы, чихание, открытое дыхание) "
+            "с белым уратным помётом и снижением яйценоскости + тонкая деформированная скорлупа — "
+            "классическая картина ИБК (нефропатогенный штамм у бройлеров, репродуктивный у несушек).\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «ИБК (&lt;i&gt;Avian coronavirus&lt;/i&gt;) вызывает респираторную форму (хрипы, "
+            "чихание, трахеиты) у бройлеров и репродуктивную у несушек (снижение яйценоскости, яйца с "
+            "тонкой/деформированной скорлупой); нефропатогенные штаммы дают мочекислый диатез и белый "
+            "уратный помёт.»\n\n"
+            "2. &lt;b&gt;Микоплазмоз птиц (&lt;i&gt;Mycoplasma gallisepticum&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Хрипы и снижение яйценоскости характерны для микоплазмоза, но белый "
+            "уратный помёт и деформированная скорлупа не типичны; чаще — аэросаккулит при вскрытии.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «&lt;i&gt;Mycoplasma gallisepticum&lt;/i&gt; вызывает хронический трахеит, "
+            "аэросаккулит, снижение яйценоскости; поражение почек с уратным диатезом не характерно.»\n\n"
+            "3. &lt;b&gt;Инфекционный ларинготрахеит (&lt;i&gt;Gallid alphaherpesvirus 1&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Хрипы и открытое дыхание совпадают с ИЛТ, однако уратный помёт, "
+            "снижение яйценоскости и деформация скорлупы не описаны при ИЛТ.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «ИЛТ поражает гортань и трахею; репродуктивная патология (снижение "
+            "яйценоскости, изменение скорлупы) не входит в клиническую картину.»\n\n"
+            "&lt;u&gt;Вывод:&lt;/у&gt; Наиболее вероятен &lt;b&gt;инфекционный бронхит кур (ИБК, IB, &lt;i&gt;Avian coronavirus&lt;/i&gt;)&lt;/b&gt;. "
+            "Рекомендованы ПЦР мазков трахеи и клоаки, серология (ELISA, ВН), генотипирование штамма."
+        )
+    
+        data = submit(
+            api_config,
+            "У цыплят-бройлеров хрипы, чихание, трахеальные хрипы, открытое дыхание. "
+            "У части птицы — обезвоживание, белый уратный помёт, ускоренная гибель. "
+            "У несушек снижение яйценоскости, яйца с тонкой деформированной скорлупой. "
+            "Какой предварительный диагноз?"
+        )
+    
+&gt;       assert_contains(data, ["бронхит", "bronchitis", "coronavirus", "ибк", "ib"])
+
+tests/pytest/eval/test_agent.py:387: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.7260448960005306, 'query': 'У цыплят-бройлеров хрипы, чихание, трахеальные хрипы, открытое дыхание. У ча...ной скорлупой. Какой предварительный диагноз?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['бронхит', 'bronchitis', 'coronavirus', 'ибк', 'ib']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['бронхит', 'bronchitis', 'coronavirus', 'ибк', 'ib'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestAvianDiagnosis" name="test_infectious_laryngotracheitis_symptoms" time="0.471"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['ларинготрахеит', 'laryngotracheitis', 'илт', 'ilt', 'herpesviridae'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestAvianDiagnosis object at 0x7ffa5c5155b0&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_infectious_laryngotracheitis_symptoms(self, api_config):
+        """
+        Инфекционный ларинготрахеит (ИЛТ) — кашель с кровью, герпесвирус.
+        knowledge/diagnostics/avian_diseases/list/infectious_laryngotracheitis.yml
+        """
+        _REFERENCE_ANSWER = (
+            "&lt;b&gt;Наиболее вероятные заболевания:&lt;/b&gt;\n\n"
+            "1. &lt;b&gt;Инфекционный ларинготрахеит (ИЛТ, &lt;i&gt;Gallid alphaherpesvirus 1&lt;/i&gt;, &lt;i&gt;Herpesviridae&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Тяжёлое дыхание с хрипами + кашель с кровянистой слизью + цианоз гребня + "
+            "геморрагическое воспаление трахеи с фибринозными пробками в просвете гортани и трахеи — "
+            "патогномоничная картина острой формы ИЛТ.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «Острая форма ИЛТ проявляется тяжёлым дыханием с хрипами, кашлем с "
+            "выделением кровянистой слизи, цианозом гребня; при вскрытии — геморрагический трахеит, "
+            "дифтеритические (фибринозные) пробки в гортани и трахее; возбудитель — "
+            "&lt;i&gt;Gallid alphaherpesvirus 1&lt;/i&gt; (семейство &lt;i&gt;Herpesviridae&lt;/i&gt;).»\n\n"
+            "2. &lt;b&gt;Болезнь Ньюкасла (&lt;i&gt;Avian paramyxovirus-1&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Тяжёлое дыхание и цианоз гребня возможны при велогенной форме болезни "
+            "Ньюкасла, однако фибринозные пробки в трахее и геморрагическое воспаление трахеи не являются "
+            "типичным патологоанатомическим признаком.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «Болезнь Ньюкасла входит в дифференциальный ряд при респираторных "
+            "заболеваниях с высокой летальностью; поражение трахеи носит катаральный, а не "
+            "фибринозно-геморрагический характер.»\n\n"
+            "3. &lt;b&gt;Инфекционный бронхит кур (&lt;i&gt;Avian coronavirus&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Хрипы и открытое дыхание возможны при ИБК, однако кровянистый кашель "
+            "с фибринозными пробками в гортани и трахее при вскрытии не характерны для ИБК.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «Инфекционный бронхит входит в дифференциальный ряд при респираторной "
+            "патологии птиц; поражение трахеи при ИБК — катаральное без геморрагий и фибринозных пробок.»\n\n"
+            "&lt;u&gt;Вывод:&lt;/у&gt; Наиболее вероятен &lt;b&gt;ИЛТ (&lt;i&gt;Gallid alphaherpesvirus 1&lt;/i&gt;, &lt;i&gt;Herpesviridae&lt;/i&gt;)&lt;/b&gt;. "
+            "Рекомендованы ПЦР мазков трахеи, гистопатология (внутриядерные включения — тельца Каудри), вирусоизоляция."
+        )
+    
+        data = submit(
+            api_config,
+            "У кур 4-месячного возраста тяжёлое дыхание с хрипами, кашель с выделением "
+            "кровянистой слизи, цианоз гребня. При вскрытии — геморрагическое воспаление "
+            "трахеи, фибринозные пробки в просвете гортани и трахеи. Какой диагноз?"
+        )
+    
+&gt;       assert_contains(data, ["ларинготрахеит", "laryngotracheitis", "илт", "ilt", "herpesviridae"])
+
+tests/pytest/eval/test_agent.py:427: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.4691109499981394, 'query': 'У кур 4-месячного возраста тяжёлое дыхание с хрипами, кашель с выделением кр...и в просвете гортани и трахеи. Какой диагноз?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['ларинготрахеит', 'laryngotracheitis', 'илт', 'ilt', 'herpesviridae']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['ларинготрахеит', 'laryngotracheitis', 'илт', 'ilt', 'herpesviridae'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestAvianDiagnosis" name="test_mycoplasmosis_avian_symptoms" time="0.520"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['микоплазмоз', 'mycoplasma', 'gallisepticum', 'crd'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestAvianDiagnosis object at 0x7ffa5ceddb50&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_mycoplasmosis_avian_symptoms(self, api_config):
+        """
+        Респираторный микоплазмоз птиц (CRD) — Mycoplasma gallisepticum, аэросаккулит.
+        knowledge/diagnostics/avian_diseases/list/mycoplasmosis.yml
+        """
+        _REFERENCE_ANSWER = (
+            "&lt;b&gt;Наиболее вероятные заболевания:&lt;/b&gt;\n\n"
+            "1. &lt;b&gt;Респираторный микоплазмоз птиц (CRD, &lt;i&gt;Mycoplasma gallisepticum&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Хронические хрипы + замедленный рост + снижение конверсии корма + "
+            "двусторонний аэросаккулит с пенистым/казеозным экссудатом + катаральный трахеит при низком "
+            "падеже — классическая картина CRD, вызванного &lt;i&gt;M. gallisepticum&lt;/i&gt;.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «&lt;i&gt;Mycoplasma gallisepticum&lt;/i&gt; вызывает хронический трахеит, пневмонию "
+            "и аэросаккулит у бройлеров; двусторонний аэросаккулит с пенистым или казеозным экссудатом — "
+            "характерное патологоанатомическое изменение; летальность низкая, но экономические потери значительны.»\n\n"
+            "2. &lt;b&gt;Инфекционный бронхит кур (&lt;i&gt;Avian coronavirus&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Хрипы и снижение конверсии возможны при ИБК, однако аэросаккулит с "
+            "казеозным экссудатом как изолированный ведущий признак более типичен для CRD.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «ИБК вызывает трахеиты и аэросаккулиты, особенно в сочетании с "
+            "&lt;i&gt;M. gallisepticum&lt;/i&gt;; аэросаккулит как изолированный ведущий признак больше типичен для CRD.»\n\n"
+            "3. &lt;b&gt;Аспергиллёз (&lt;i&gt;Aspergillus fumigatus&lt;/i&gt;)&lt;/b&gt;\n\n"
+            "&lt;u&gt;Обоснование:&lt;/у&gt; Аэросаккулит с казеозным содержимым возможен при аспергиллёзе, однако "
+            "двусторонний инфекционный аэросаккулит с трахеитом в хроническом групповом варианте — признак "
+            "бактериальной/микоплазменной этиологии.\n\n"
+            "&lt;u&gt;Подтверждение:&lt;/у&gt; «&lt;i&gt;Aspergillus fumigatus&lt;/i&gt; вызывает гранулематозный аэросаккулит и "
+            "пневмонию; типично поражение молодняка при контаминированном подстилочном материале; трахеит менее характерен.»\n\n"
+            "&lt;u&gt;Вывод:&lt;/у&gt; Наиболее вероятен &lt;b&gt;респираторный микоплазмоз (&lt;i&gt;Mycoplasma gallisepticum&lt;/i&gt;, CRD)&lt;/b&gt;. "
+            "Рекомендованы ПЦР трахеальных мазков, серология (ИФА, РБПА), культивирование на специальных средах."
+        )
+    
+        data = submit(
+            api_config,
+            "У бройлеров хронические хрипы, замедленный рост, снижение конверсии корма. "
+            "При вскрытии — двусторонний аэросаккулит с пенистым или казеозным экссудатом, "
+            "катаральный трахеит. Падёж невысокий, но экономические потери значительные. "
+            "Какой предварительный диагноз?"
+        )
+    
+    
+&gt;       assert_contains(data, ["микоплазмоз", "mycoplasma", "gallisepticum", "crd"])
+
+tests/pytest/eval/test_agent.py:467: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.5177894180014846, 'query': 'У бройлеров хронические хрипы, замедленный рост, снижение конверсии корма. П... значительные. Какой предварительный диагноз?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['микоплазмоз', 'mycoplasma', 'gallisepticum', 'crd']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['микоплазмоз', 'mycoplasma', 'gallisepticum', 'crd'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestLibrarian" name="test_erysipelas_swine" time="0.463"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['рожа', 'erysipelas', 'erysipelothrix', '12 недель'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestLibrarian object at 0x7ffa5c54c910&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_erysipelas_swine(self, api_config):
+        """
+        Рожа свиней — Пейсак, глава «Бактериальные болезни».
+        """
+        _REFERENCE_ANSWER = (
+            'Сосущие поросята проявляют устойчивость к роже, причём уровень этой устойчивости '
+            'зависит от количества типичных антител, приобретённых вместе с молозивом. Согласно тексту, '
+            'у пассивно иммунизированных поросят восприимчивость к заражению появляется приблизительно '
+            'около 12 недели жизни.'
+        )
+    
+        data = submit(
+            api_config,
+            "Посмотри в книгах: Почему поросята-сосуны обычно не болеют рожей, и в каком возрасте у них"
+            " появляется восприимчивость к заражению?",
+        )
+    
+&gt;       assert_contains(data, ["рожа", "erysipelas", "erysipelothrix", "12 недель"])
+
+tests/pytest/eval/test_agent.py:499: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.4615227780013811, 'query': 'Посмотри в книгах: Почему поросята-сосуны обычно не болеют рожей, и в каком ...у них появляется восприимчивость к заражению?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['рожа', 'erysipelas', 'erysipelothrix', '12 недель']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['рожа', 'erysipelas', 'erysipelothrix', '12 недель'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestLibrarian" name="test_streptococcosis_clinical_forms" time="0.551"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['стрептококк', 'streptococcus', 'менингит', 'артрит', 'плевроперикардит'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestLibrarian object at 0x7ffa5c54ca50&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_streptococcosis_clinical_forms(self, api_config):
+        """
+        Клинико-анатомические формы стрептококкоза — Устенко Ж. Ю.,
+        «Патоморфология стрептококкоза свиней в группах доращивания и откорма».
+        """
+        _REFERENCE_ANSWER = (
+            'Согласно литературным данным, приведённым в "Патоморфология стрептококкоза свиней'
+            ' в группах доращивания и откорма.":\n\n'
+            'В группе доращивания обычно наблюдаются: полиартрит, менингит, пневмония,'
+            ' плевроперикардит, эндокардит, иногда полисерозит, стрептодермия и цервикальный'
+            ' лимфаденит. Некоторые авторы указывают на преимущественное распространение в этой'
+            ' группе поражений головного мозга и лёгких.\n\n'
+            'В группе откорма наиболее характерны: плевроперикардит и пневмония, причём некоторые'
+            ' исследователи (Sanford, 1987; Jensen et al., 2010) отмечают преимущественное'
+            ' распространение признаков поражения сердца.'
+        )
+    
+        data = submit(
+            api_config,
+            "Посмотри в книгах: Какие клинико-анатомические формы стрептококкоза наиболее характерны для свиней"
+            " группы доращивания и группы откорма по данным главы?",
+        )
+    
+&gt;       assert_contains(data, ["стрептококк", "streptococcus", "менингит", "артрит", "плевроперикардит"])
+
+tests/pytest/eval/test_agent.py:525: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.5498992779976106, 'query': 'Посмотри в книгах: Какие клинико-анатомические формы стрептококкоза наиболее...доращивания и группы откорма по данным главы?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['стрептококк', 'streptococcus', 'менингит', 'артрит', 'плевроперикардит']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['стрептококк', 'streptococcus', 'менингит', 'артрит', 'плевроперикардит'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestLibrarian" name="test_mycoplasmosis_poultry" time="0.484"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['mycoplasma', 'микоплазма', 'mollicutes', 'gallisepticum'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestLibrarian object at 0x7ffa5c515940&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_mycoplasmosis_poultry(self, api_config):
+        """
+        Микоплазмоз — Diseases of Poultry, David E. Swayne, глава «21 Mycoplasmosis».
+        """
+        _REFERENCE_ANSWER = (
+            'Это объясняется отсутствием полным отсутствием клеточной стенки. Как указано в тексте, '
+            'микоплазмы ограничены только плазматической мембраной (bound by a plasma membrane only). '
+            'Именно это отсутствие клеточной стенки обеспечивает их устойчивость к антибиотикам, которые '
+            'воздействуют на ее синтез, а также обуславливает характерный тип морфологии колоний — «fried egg» («глазунья»).'
+        )
+    
+        data = submit(
+            api_config,
+            "Посмотри в книгах: Какие особенности строения Mycoplasma объясняют их устойчивость к антибиотикам,"
+            " влияющим на синтез клеточной стенки, и формирование колоний в виде «глазуньи»?",
+        )
+    
+&gt;       assert_contains(data, ["mycoplasma", "микоплазма", "mollicutes", "gallisepticum"])
+
+tests/pytest/eval/test_agent.py:545: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.48297173299943097, 'query': 'Посмотри в книгах: Какие особенности строения Mycoplasma объясняют их устой...ки, и формирование колоний в виде «глазуньи»?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['mycoplasma', 'микоплазма', 'mollicutes', 'gallisepticum']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['mycoplasma', 'микоплазма', 'mollicutes', 'gallisepticum'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestLibrarian" name="test_newcastle_disease" time="0.257"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['ньюкасла', 'newcastle', 'гемагглютинин', 'нейраминидаза', 'hn', 'гликопротеин'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestLibrarian object at 0x7ffa5c515a70&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_newcastle_disease(self, api_config):
+        """
+        Болезнь Ньюкасла — Poultry Health: A Guide for Professionals 2021,
+        глава «Newcastle Disease».
+        """
+        _REFERENCE_ANSWER = (
+            'Два внешних гликопротеина — **HN** (гемагглютинин-нейраминидаза) и **F** (белок слияния). '
+            'Они являются детерминантами вирулентности, поскольку определяют способность вируса '
+            'прикрепляться к клетке (HN) и проникать внутрь с помощью активации F0 протеазами хозяина (F). '
+            'Наличие множества основных аминокислот в сайте расщепления F0 — главный признак '
+            'высоковирулентного NDV. Одновременно эти белки служат основной мишенью для иммунной системы, '
+            'так как расположены на поверхности вируса, и нейтрализующие антитела против них блокируют '
+            'ключевые этапы инфекционного цикла.'
+        )
+    
+        data = submit(
+            api_config,
+            "Посмотри в книгах: Какие два внешних гликопротеина на поверхности вируса Ньюкаслской болезни являются"
+            " ключевыми детерминантами вирулентности и главной мишенью для иммунного ответа хозяина?",
+        )
+    
+&gt;       assert_contains(data, ["ньюкасла", "newcastle", "гемагглютинин", "нейраминидаза", "hn", "гликопротеин"])
+
+tests/pytest/eval/test_agent.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.25480511099885916, 'query': 'Посмотри в книгах: Какие два внешних гликопротеина на поверхности вируса Нь...главной мишенью для иммунного ответа хозяина?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['ньюкасла', 'newcastle', 'гемагглютинин', 'нейраминидаза', 'hn', 'гликопротеин']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['ньюкасла', 'newcastle', 'гемагглютинин', 'нейраминидаза', 'hn', 'гликопротеин'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestLibrarian" name="test_app_strategic_therapy" time="0.264"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['apx', 'actinobacillus', 'плевропневмония', 'токсин'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestLibrarian object at 0x7ffa5c528710&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_app_strategic_therapy(self, api_config):
+        """
+        АПП свиней — Стратегическая терапия при актинобациллезной плевропневмонии свиней,
+        Лысов А.В., журнал «Свиноводство» 07.2024.
+        """
+        _REFERENCE_ANSWER = (
+            'Согласно статье, предпочтение комбинированным средствам объясняется несколькими причинами. '
+            'Во-первых, правильная комбинация двух и более компонентов даёт синергидный эффект, позволяя'
+            ' охватить более широкий спектр патогенов — не только основной (Actinobacillus pleuropneumoniae),'
+            ' но и бактерии, вызывающие вторичные инфекции. '
+            'Во-вторых, использование комбинированных препаратов помогает снизить риски возникновения'
+            ' резистентности у бактерий к лекарственным средствам.'
+        )
+    
+        data = submit(
+            api_config,
+            "Посмотри в книгах: Почему для лечения актинобациллезной плевропневмонии свиней ветеринарные врачи часто выбирают"
+            " комбинированные антибактериальные препараты, а не монокомпонентные?",
+        )
+    
+&gt;       assert_contains(data, ["apx", "actinobacillus", "плевропневмония", "токсин"])
+
+tests/pytest/eval/test_agent.py:592: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.2623970300046494, 'query': 'Посмотри в книгах: Почему для лечения актинобациллезной плевропневмонии свин...ктериальные препараты, а не монокомпонентные?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['apx', 'actinobacillus', 'плевропневмония', 'токсин']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['apx', 'actinobacillus', 'плевропневмония', 'токсин'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestPharmacist" name="test_contraindications_tilanik" time="0.243"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['тиланик', 'тилозин'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestPharmacist object at 0x7ffa5c54cb90&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_contraindications_tilanik(self, api_config):
+        """
+        Тиланик — противопоказания (section_type=contraindications).
+        """
+        _REFERENCE_ANSWER = (
+            "Тиланик не рекомендуется применять с пенициллинами, цефалоспоринами "
+            "или макролидами, так как это может снизить антибактериальный эффект тилозина."
+            "Запрещается назначение препарата курам-несушкам, т. к. тилозин накапливается в яйцах."
+        )
+    
+        data = submit(
+            api_config,
+            "Каковы противопоказания к применению препарата Тиланик?",
+        )
+    
+&gt;       assert_contains(data, ["тиланик", "тилозин"])
+
+tests/pytest/eval/test_agent.py:629: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.24121800799912307, 'query': 'Каковы противопоказания к применению препарата Тиланик?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['тиланик', 'тилозин']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['тиланик', 'тилозин'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestPharmacist" name="test_active_substance_tiamulin" time="0.236"><failure message="AssertionError: Ответ не содержит обязательных слов ['муливет', 'терпентиам', 'тиалонг', 'тиациклин', 'источники'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestPharmacist object at 0x7ffa5c54ccd0&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_active_substance_tiamulin(self, api_config):
+        """
+        Поиск по д.в.: тиамулин для свиней.
+        Препараты в БД: Муливет, Родотет, Терпентиам (10%/45%/80%/гранулят/премикс),
+        Тиалонг (45% WS / 80% Feed), Тиамакс 45%, Тиамокс, Тиамулин 45%/80%,
+        Тиастим 10% К, Тиациклин, Ципровет-пульмо.
+        """
+        _REFERENCE_ANSWER = (
+            "Препараты, содержащие тиамулин (тиамулина гидроген фумарат) для свиней: "
+            "Терпентиам 45%, Терпентиам 80%, Тиалонг 45% WS, Тиалонг 80% Feed, "
+            "Тиамакс 45%, Тиамокс, Тиамулин 45%, Тиациклин, Муливет, Родотет и другие. "
+        )
+    
+        data = submit(
+            api_config,
+            "Какие препараты с действующим веществом тиамулин есть для свиней?",
+        )
+    
+&gt;       assert_contains(data, ["муливет", "терпентиам", "тиалонг", "тиациклин", "источники"], require_all=True)
+
+tests/pytest/eval/test_agent.py:651: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.23365353199915262, 'query': 'Какие препараты с действующим веществом тиамулин есть для свиней?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['муливет', 'терпентиам', 'тиалонг', 'тиациклин', 'источники']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+&gt;           assert not missing, (
+                   ^^^^^^^^^^^
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит обязательных слов ['муливет', 'терпентиам', 'тиалонг', 'тиациклин', 'источники'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:53: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestPharmacist" name="test_spelink_interactions" time="0.341"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['спелинк', 'линкомицин', 'спектиномицин'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestPharmacist object at 0x7ffa5c515ba0&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_spelink_interactions(self, api_config):
+        """
+        Спелинк®-44 — взаимодействия.
+        drug_id=22, линкомицин + спектиномицин, свиньи и цыплята.
+        Инструкция в БД не содержит раздела о совместимости с другими препаратами —
+        агент должен честно сообщить об отсутствии этих сведений.
+        """
+        _REFERENCE_ANSWER = (
+            "В инструкции к препарату Спелинк-44 информация о совместимости "
+            "с другими антибиотиками не указана. "
+        )
+    
+        data = submit(
+            api_config,
+            "Какие антибиотики нельзя применять вместе со Спелинком-44 и почему?",
+        )
+    
+&gt;       assert_contains(data, ["спелинк", "линкомицин", "спектиномицин"])
+
+tests/pytest/eval/test_agent.py:670: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.33884153899998637, 'query': 'Какие антибиотики нельзя применять вместе со Спелинком-44 и почему?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['спелинк', 'линкомицин', 'спектиномицин']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['спелинк', 'линкомицин', 'спектиномицин'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestPharmacist" name="test_kolimixol_multispecies" time="0.239"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['колимиксол', 'колистин'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestPharmacist object at 0x7ffa5c515cd0&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_kolimixol_multispecies(self, api_config):
+        """
+        Колимиксол — для каких видов разрешён и различаются ли дозировки.
+        drug_id=14, колистина сульфат; target: птица, свиньи, телята.
+        В БД две инструкции:
+          1) птица 0,2–0,3 кг/т корма, свиньи 0,75 кг/т, телята 20 мг/кг м.т.
+             (из расчёта 4,8 млн МЕ/кг корма)
+          2) птица 50–75 г / 100–150 г на 1000 л воды (формы 12 и 6 млн МЕ),
+             свиньи и телята 60–80 мг / 120–160 мг на 10 кг м.т.
+        """
+        _REFERENCE_ANSWER = (
+            "Колимиксол (колистина сульфат) разрешён для птицы, свиней и телят. "
+            "Дозировки различаются по виду животного и форме выпуска. "
+            "Для птицы препарат дозируют на 1000 л воды или на тонну корма. "
+            "Для свиней и телят дозу рассчитывают на килограмм массы тела или на тонну корма. "
+            "Например, при форме 12 млн МЕ для птицы — 50–75 г на 1000 л воды, "
+            "для свиней и телят — 60–80 мг на 10 кг массы животного."
+        )
+    
+        data = submit(
+            api_config,
+            "Для каких видов животных разрешён Колимиксол, и различаются ли у них дозировки?",
+        )
+    
+&gt;       assert_contains(data, ["колимиксол", "колистин"])
+
+tests/pytest/eval/test_agent.py:701: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.23730296199937584, 'query': 'Для каких видов животных разрешён Колимиксол, и различаются ли у них дозировки?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['колимиксол', 'колистин']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['колимиксол', 'колистин'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase><testcase classname="tests.pytest.eval.test_agent.TestPharmacist" name="test_tiamulin_comparison_vik_vs_nitafarm" time="0.366"><failure message="AssertionError: Ответ не содержит ни одного из ожидаемых слов ['терпентиам', 'тиалонг'].&#10;Ответ: Извините, произошла ошибка при обработке вашего вопроса.">self = &lt;test_agent.TestPharmacist object at 0x7ffa5c528830&gt;
+api_config = {'base_url': 'http://localhost:81', 'headers': {'Authorization': 'Bearer QBg0XjaY7p2J5Ak3RMeX46mXvat15rR7'}, 'model': 'INLINE Vet-bot Test'}
+
+    def test_tiamulin_comparison_vik_vs_nitafarm(self, api_config):
+        """
+        Терпентиам® 45% (ВИК) vs Тиалонг 45% WS (Nita-farm) —
+        одно д.в. (тиамулина гидроген фумарат), разные производители.
+        Показания НЕ совпадают: Терпентиам — свиньи (ЖКТ + респираторные),
+        Тиалонг 45% WS по инструкции в БД — исключительно птица.
+        Дозировки для свиней есть только у Терпентиама:
+          ЖКТ (дизентерия): 5–10 мг/кг м.т. (1,1–2,2 г/100 кг), 3–5 дней;
+          респираторные (микоплазмоз): 10–20 мг/кг (2,2–4,4 г/100 кг), 5–10 дней.
+        Тиалонг 45% WS содержит только схемы для птицы (концентрация раствора 0,025%/0,0125%).
+        """
+        _REFERENCE_ANSWER = (
+            "Показания при дизентерии и микоплазмозе свиней у препаратов не одинаковы. "
+            "Терпентиам 45% имеет прямое указание на применение свиньям при болезнях "
+            "желудочно-кишечного тракта (включая дизентерию) и респираторной системы "
+            "(в том числе энзоотическая пневмония, вызываемая микоплазмами). "
+            "Тиалонг 45% WS по инструкции предназначен исключительно для птицы: "
+            "раздел показаний описывает только микоплазменные инфекции кур; "
+            "упоминаний о свиньях, дизентерии или микоплазмозе свиней нет. "
+            "Схемы дозирования также кардинально различаются: "
+            "Терпентиам 45% — при ЖКТ-заболеваниях свиней 5–10 мг/кг массы тела 3–5 дней, "
+            "при респираторных болезнях 10–20 мг/кг курсом 5–10 дней; "
+            "Тиалонг 45% WS содержит дозировки исключительно для птицы."
+        )
+    
+        data = submit(
+            api_config,
+            "Сравните Терпентиам 45% и Тиалонг 45% WS: одинаковы ли показания"
+            " при дизентерии и микоплазмозе свиней, есть ли различия в схемах дозирования?",
+        )
+    
+        assert_not_contains(data, ["не найден", "не найдено", "не нашел"])
+&gt;       assert_contains(data, ["терпентиам", "тиалонг"])
+
+tests/pytest/eval/test_agent.py:739: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'elapsed': 0.36454329900152516, 'query': 'Сравните Терпентиам 45% и Тиалонг 45% WS: одинаковы ли показания при дизент...виней, есть ли различия в схемах дозирования?', 'response': 'Извините, произошла ошибка при обработке вашего вопроса.'}
+keywords = ['терпентиам', 'тиалонг']
+
+    def assert_contains(data: dict, keywords: list[str], *, require_all: bool = False):
+        lemmas = _text_lemmas(data["response"])
+        if require_all:
+            missing = [kw for kw in keywords if not _keyword_matches(kw, lemmas)]
+            assert not missing, (
+                f"Ответ не содержит обязательных слов {missing}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+        else:
+            found = [kw for kw in keywords if _keyword_matches(kw, lemmas)]
+&gt;           assert found, (
+                   ^^^^^
+                f"Ответ не содержит ни одного из ожидаемых слов {keywords}.\n"
+                f"Ответ: {data['response'][:500]}"
+            )
+E           AssertionError: Ответ не содержит ни одного из ожидаемых слов ['терпентиам', 'тиалонг'].
+E           Ответ: Извините, произошла ошибка при обработке вашего вопроса.
+
+tests/pytest/metrics.py:59: AssertionError</failure></testcase></testsuite></testsuites>

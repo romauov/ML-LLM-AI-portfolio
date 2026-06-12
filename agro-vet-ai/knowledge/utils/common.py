@@ -1,0 +1,5 @@
+import re
+
+
+def natural_sort_key(s):
+    return [int(c) if c.isdigit() else c for c in re.split(r'(\d+)', s)]

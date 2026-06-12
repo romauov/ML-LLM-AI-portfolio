@@ -1,0 +1,4 @@
+id: deepseek:deepseek-chat
+config:
+  temperature: 0.0
+  apiKey: {{env.DEEPSEEK_API_KEY}}

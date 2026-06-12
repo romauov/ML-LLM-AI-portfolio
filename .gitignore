@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Environment
+.env
+.env.local
+*.key
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large files
+*.onnx
+*.zip
+*.tar.gz
+*.tar
+*.pdf
+*.PDF
+
+# Data
+database_data/
+logs/
+mlruns/
+.dvc/
+
+# Model files
+*.pt
+*.pth
+*.bin
+*.h5

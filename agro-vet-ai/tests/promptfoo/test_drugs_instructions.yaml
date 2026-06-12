@@ -1,0 +1,204 @@
+description: "Тестирование модуля инструкций по препаратам"
+
+evaluateOptions:
+  maxConcurrency: 1
+  delay: 2000
+
+tracing:
+  enabled: true
+
+env:
+  PROMPTFOO_REQUEST_TIMEOUT_MS: 120000
+ 
+
+# Провайдер для тестируемой системы
+providers:
+  - id: file://scripts/vetBotProvider.js
+    label: vetbot
+
+# Промпт-шаблон (используется переменная query из vars)
+prompts:
+  - "{{query}}"
+
+# DeepSeek JUDGE
+#defaultTest:
+#   options:
+#     provider:
+#         id: "deepseek:deepseek-chat"
+#         config:
+#           temperature: 0.0
+
+# LM Studio JUDGE
+defaultTest:
+  options:
+    provider:
+      id: https
+      config:
+        url: '{{env.PROMPTFOO_API_URL}}/chat/completions'
+        method: POST
+        headers:
+          Content-Type: application/json
+          Authorization: 'Bearer {{env.PROMPTFOO_API_KEY}}'
+        body:
+          model: '{{env.PROMPTFOO_LOCAL_MODEL}}'
+          messages:
+            - role: user
+              content: '{{prompt}}'
+          temperature: 0.0
+          max_tokens: 1024
+        transformResponse: file://scripts/transformResponse.js
+
+
+tests:
+  - description: "Суммаризация по препарату"
+    vars:
+      query: "Что такое пульмосол?"
+      context: ""
+    assert:
+      # LLM Rubric
+      - type: llm-rubric
+        metric: "Качество"
+        value: |
+          Оцените качество ответа по следующим критериям:
+          - Предоставлена краткая информация о назначении препарата (вес: 0.5)
+          - Указаны активные компоненты или состав (вес: 0.5)
+
+          Для каждого критерия: 1 балл если выполнен, 0 баллов если не выполнен.
+          Итоговая оценка = сумма (балл_критерия × вес_критерия).
+
+          ВАЖНО: Ответьте ТОЛЬКО числом от 0.0 до 1.0 без дополнительного текста.
+          Пример правильного ответа: 0.85
+        threshold: 0.7
+        weight: 0.5
+
+        # Context Faithfulness
+      - type: context-faithfulness
+        metric: "Контекст"
+        contextTransform: 'typeof context === "string" ? context : JSON.stringify(context)'
+        threshold: 0.8
+        weight: 0.5
+
+
+  - description: "Поиск препарата по классу животного"
+    vars:
+      query: "Найди антибиотики, которые подходят телятам."
+      context: ""
+    assert:
+      # LLM Rubric
+      - type: llm-rubric
+        metric: "Качество"
+        value: |
+          Оцените качество ответа по следующим критериям:
+          - Предоставлен список препаратов-антибиотиков (вес: 0.33)
+          - Препараты могут применяться для лечения телят (вес: 0.33)
+          - Указаны дозировки согласно возрасту животного (вес: 0.34)
+
+          Для каждого критерия: 1 балл если выполнен, 0 баллов если не выполнен.
+          Итоговая оценка = сумма (балл_критерия × вес_критерия).
+
+          ВАЖНО: Ответьте ТОЛЬКО числом от 0.0 до 1.0 без дополнительного текста.
+          Пример правильного ответа: 0.67
+        threshold: 0.7
+        weight: 0.5
+
+      # Context Faithfulness
+      - type: context-faithfulness
+        metric: "Контекст"
+        contextTransform: 'typeof context === "string" ? context : JSON.stringify(context)'
+        threshold: 0.8
+        weight: 0.5
+
+
+  - description: "Вывести список с одним действующим в-вом"
+    vars:
+      query: "Выведи список 5 препаратов с энрофлоксацином."
+      context: ""
+    assert:
+      # LLM Rubric
+      - type: llm-rubric
+        metric: "Качество"
+        value: |
+          Оцените качество ответа по следующим критериям:
+          - Предоставлен список из 5 препаратов (вес: 0.25)
+          - Указано действующее вещество "энрофлоксацин" (вес: 0.25)
+          - Указаны торговые названия препаратов (вес: 0.25)
+          - Приведены формы выпуска (таблетки, инъекции, раствор и т.д.) (вес: 0.25)
+
+          Для каждого критерия: 1 балл если выполнен, 0 баллов если не выполнен.
+          Итоговая оценка = сумма (балл_критерия × вес_критерия).
+
+          ВАЖНО: Ответьте ТОЛЬКО числом от 0.0 до 1.0 без дополнительного текста.
+          Пример правильного ответа: 0.75
+        threshold: 0.7
+        weight: 0.5
+
+      # Context Faithfulness
+      - type: context-faithfulness
+        metric: "Контекст"
+        contextTransform: 'typeof context === "string" ? context : JSON.stringify(context)'
+        threshold: 0.8
+        weight: 0.5
+
+
+  - description: "Инструкция к препарату"
+    vars:
+      query: "Выведи инструкцию для тиланика 5%."
+      context: ""
+    assert:
+      # LLM Rubric
+      - type: llm-rubric
+        metric: "Качество"
+        value: |
+          Оцените качество ответа по следующим критериям:
+          - Приведена инструкция для препарата тиланик 5% (вес: 0.17)
+          - Указан механизм действия (вес: 0.17)
+          - Указаны показания к применению (вес: 0.17)
+          - Даны дозировки для разных видов животных (вес: 0.17)
+          - Описаны побочные эффекты и противопоказания (вес: 0.16)
+          - Приведены условия хранения (вес: 0.16)
+
+          Для каждого критерия: 1 балл если выполнен, 0 баллов если не выполнен.
+          Итоговая оценка = сумма (балл_критерия × вес_критерия).
+
+          ВАЖНО: Ответьте ТОЛЬКО числом от 0.0 до 1.0 без дополнительного текста.
+          Пример правильного ответа: 0.83
+        threshold: 0.7
+        weight: 0.5
+
+      # Context Faithfulness
+      - type: context-faithfulness
+        metric: "Контекст"
+        contextTransform: 'typeof context === "string" ? context : JSON.stringify(context)'
+        threshold: 0.8
+        weight: 0.5
+
+  - description: "Поиск препарата по свойсвтам"
+    vars:
+      query: "Найди препараты от поноса для птиц."
+      context: ""
+    assert:
+      # LLM Rubric
+      - type: llm-rubric
+        metric: "Качество"
+        value: |
+          Оцените качество ответа по следующим критериям:
+          - Предоставлен список препаратов (вес: 0.2)
+          - Указаны торговые названия и действующие вещества (вес: 0.2)
+          - В показания к применению входит лечение поноса (вес: 0.2)
+          - Препараты могут применяться для лечения птиц (вес: 0.2)
+          - Указаны механизмы действия препаратов (вес: 0.2)
+
+          Для каждого критерия: 1 балл если выполнен, 0 баллов если не выполнен.
+          Итоговая оценка = сумма (балл_критерия × вес_критерия).
+
+          ВАЖНО: Ответьте ТОЛЬКО числом от 0.0 до 1.0 без дополнительного текста.
+          Пример правильного ответа: 0.8
+        threshold: 0.7
+        weight: 0.5
+
+      # Context Faithfulness
+      - type: context-faithfulness
+        metric: "Контекст"
+        contextTransform: 'typeof context === "string" ? context : JSON.stringify(context)'
+        threshold: 0.8
+        weight: 0.5

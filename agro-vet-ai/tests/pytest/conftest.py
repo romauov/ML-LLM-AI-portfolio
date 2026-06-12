@@ -1,0 +1,7 @@
+import sys
+from pathlib import Path
+
+_root = Path(__file__).parent
+sys.path.insert(0, str(_root))
+sys.path.insert(0, str(_root / "eval"))
+sys.path.insert(0, str(_root / "api"))

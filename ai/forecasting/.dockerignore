@@ -1,0 +1,14 @@
+.git
+.gitignore
+__pycache__
+*.pyo
+.Python
+env
+venv
+.venv
+*.egg-info
+.dockerignore
+Dockerfile
+README.md
+storage/*
+!storage/.gitkeep

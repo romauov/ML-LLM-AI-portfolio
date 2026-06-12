@@ -1,0 +1,123 @@
+---
+build_images:
+  stage: build
+  image: docker:27.5.1
+  # variables:
+  #   DOCKER_BUILDKIT: "0"
+  script:
+    - echo "Создание .env файла..."
+    - env > .env
+    - echo "Сборка Docker-образов без кэша..."
+    - docker build -f Dockerfile.postgres -t vetbot_postgres_image .
+    - docker build -f Dockerfile.vetbot -t vetbot_app_image .
+    - docker build -f investigations/mcp-server/Dockerfile -t vetretro-mcp-image .
+    - docker build -f investigations/web-backend/Dockerfile -t vetretro-backend-image .
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+  tags:
+    - rag-system-runner
+
+update_stack:
+  stage: deploy
+  image: docker:27.5.1
+  script:
+    - echo "Проверка и развертывание/обновление стека vetbot..."
+
+    # Отладочная информация перед деплоем
+    - echo "Проверка наличия образов:"
+    - docker images | grep -E "(vetretro|vetbot)"
+
+    # Проверяем существование стека
+    - docker stack deploy -c docker-compose.swarm.yaml vetbot
+
+    # Ждем немного перед проверкой статуса
+    - sleep 10
+
+    # Подробный статус сервисов
+    - echo "Статус сервисов:"
+    - docker stack services vetbot
+
+    # Проверяем логи проблемных сервисов
+    - echo "Логи mcp-server сервиса:"
+    - docker service logs vetbot_mcp-server || echo "Не удалось получить логи mcp-server"
+
+    - echo "Логи web-backend сервиса:"
+    - docker service logs vetbot_web-backend || echo "Не удалось получить логи web-backend"
+
+    # Проверяем задачи сервисов для более детальной информации
+    - echo "Детали задач mcp-server:"
+    - docker service ps vetbot_mcp-server
+
+    - echo "Детали задач web-backend:"
+    - docker service ps vetbot_web-backend
+  needs:
+    - build_images
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+  tags:
+    - rag-system-runner
+
+redeploy_stack:
+  stage: deploy
+  image: docker:27.5.1
+  script:
+    - echo "Полная пересборка стека vetbot..."
+
+    # Отладочная информация перед удалением
+    - echo "Текущие сервисы до удаления:"
+    - docker stack services vetbot || echo "Стек vetbot не найден"
+
+    # Удаляем стек если существует
+    - |
+      if docker stack ls | grep -q "vetbot"; then
+        echo "Удаляем существующий стек vetbot..."
+        docker stack rm vetbot
+
+        # Ждем пока стек полностью удалится
+        echo "Ожидание удаления стека (30 секунд)..."
+        sleep 30
+
+        # # Очищаем dangling ресурсы (опционально)
+        # echo "Очистка неиспользуемых ресурсов..."
+        # docker system prune -f
+      else
+        echo "Стек vetbot не найден, пропускаем удаление."
+      fi
+
+    # Отладочная информация перед новым деплоем
+    - echo "Проверка наличия образов перед деплоем:"
+    - docker images | grep -E "(vetretro|vetbot)"
+
+    # Развертываем стек заново
+    - echo "Развертывание чистого стека vetbot..."
+    - docker stack deploy -c docker-compose.swarm.yaml vetbot
+
+    # Ждем и проверяем с более подробной информацией
+    - echo "Ожидание запуска сервисов (30 секунд)..."
+    - sleep 30
+
+    - echo "Статус развертывания:"
+    - docker stack services vetbot
+
+    # Проверяем логи проблемных сервисов
+    - echo "Логи mcp-server сервиса:"
+    - docker service logs vetbot_mcp-server || echo "Не удалось получить логи mcp-server"
+
+    - echo "Логи web-backend сервиса:"
+    - docker service logs vetbot_web-backend || echo "Не удалось получить логи web-backend"
+
+    # Проверяем задачи сервисов для более детальной информации
+    - echo "Детали задач mcp-server:"
+    - docker service ps vetbot_mcp-server
+
+    - echo "Детали задач web-backend:"
+    - docker service ps vetbot_web-backend
+  needs:
+    - build_images
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+  tags:
+    - rag-system-runner

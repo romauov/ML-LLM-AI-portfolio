@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "vetretro-http": {
+      "url": "http://localhost:8765/sse"
+    }
+  }
+}

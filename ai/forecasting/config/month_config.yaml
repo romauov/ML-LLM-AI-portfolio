@@ -1,0 +1,243 @@
+n_forecasts: 12
+optuna_n_trials: 10
+cross_validation_k_folds: 4
+outliers_sliding_window_size: 3
+use_only_light_models: False
+min_unique_points: 2
+freq: 'MS'
+years_of_historical_data: 5
+
+neuralprophet:
+  model:
+    drop_missing: True
+    unknown_data_normalization: True
+    trend_global_local: 'local'
+    season_global_local: 'local'
+    yearly_seasonality: True
+    weekly_seasonality: False
+    daily_seasonality: False
+    learning_rate: 1e-4
+    n_lags: 12
+    n_forecasts: 12
+  train:
+    ew_lag: 3
+    freq: 'MS'
+    n_epochs: 30
+    period: 12
+
+
+exponential_smoothing:
+  model:
+    seasonal_periods: 12
+    trend: 'additive'
+    seasonal: 'additive'
+    damped_trend: False
+    use_boxcox: False
+    freq: 'MS'
+  train:
+    ew_lag: 3
+
+prophet:
+  model:
+    growth: 'linear'
+    n_changepoints: 25
+    changepoint_range: 0.8
+    yearly_seasonality: True
+    weekly_seasonality: 'auto'
+    daily_seasonality: 'auto'
+    seasonality_mode: 'additive'
+    seasonality_prior_scale: 10.0
+    holidays_prior_scale: 10.0
+    changepoint_prior_scale: 0.05
+    holidays_mode: 'additive'
+  train:
+    period: 12
+    ew_lag: 3
+    freq: 'MS'
+
+theta:
+  model:
+    period: 12
+  train:
+    theta: 2
+    ew_lag: 3
+    use_mle: True
+    freq: 'MS'
+
+arima:
+  model:
+    p: 1 # сколько прошлых значений ряда используется для предсказания текущего
+    d: 1 # Сколько раз нужно взять разность ряда, чтобы он стал стационарным. d=0 — ряд уже стационарен. d=1 — берётся первая разность d=2 — разность разности и т.д.
+    q: 0 # сколько прошлых ошибок (шумов) модели учитывается.
+    P: 1 # сезонный порядок авторегрессии (SAR). P=1 означает, что значение в текущем сезоне зависит от значения в том же периоде прошлого
+    D: 0 # сезонный порядок интегрирования (разность)
+    Q: 0 # сезонный порядок скользящего среднего (SMA). Q=1 означает, что ошибка модели зависит от ошибки, сделанной в том же сезоне прошлого года
+    s: 12 # длина сезонного цикла
+    simple_differencing: True
+    fit_intercept: False
+  train:
+    method: 'css'
+    freq: 'W-MON'
+
+timesfm:
+  model:
+    model_name: 'google/timesfm-2.5-200m-pytorch'
+    max_context: 1024
+    normalize_inputs: True
+    use_continuous_quantile_head: True
+    infer_is_positive: True
+  train:
+    ew_lag: 0
+    freq: 'MS'
+    period: 12
+
+# каждый месяц с первого по седьмой день в воскресенье в 21:00
+scheduler:
+  forecasting:
+    day: '1-7'
+    hour: 21
+    minute: 0
+    day_of_week: 'sun'
+  dashboards:
+    hour: 6
+    minute: 0
+
+meat_products:
+  - name: 'Говядина тримминг без кости замороженный'
+    product:
+      - 'Говядина'
+    product_type:
+    - 'тримминг'
+    product_details:
+      - '%бк%'
+    temperature_state:
+    - 'зам'
+
+  - name: 'Свинина окорок охлажденный'
+    product:
+      - 'Свинина'
+    product_type:
+      - 'окорок'
+    temperature_state:
+      - 'охл'
+
+  - name: 'Кура филе грудки замороженная'
+    product:
+      - 'Кура'
+    product_type:
+      - 'филе грудки'
+    temperature_state:
+      - 'зам'
+
+  - name: 'Кура филе грудки без кожи охлажденная'
+    product:
+      - 'Кура'
+    product_type:
+      - 'филе грудки'
+    product_details:
+          - '%бк%'
+    temperature_state:
+      - 'охл'
+
+  - name: 'Кура голень замороженная'
+    product:
+      - 'Кура'
+    product_type:
+      - 'голень'
+    temperature_state:
+      - 'зам'
+
+  - name: 'Кура мясо механической обвалки'
+    product:
+      - 'Кура'
+    product_type:
+      - 'мясо механической обвалки'
+
+  - name: 'Индейка филе грудки охлажденная'
+    product:
+      - 'Индейка'
+    product_type:
+      - 'филе грудки'
+    temperature_state:
+      - 'охл'
+
+seafood_products:
+  - name: 'плавники кальмара'
+    product_type:
+      - 'кальмар'
+    goods_type:
+      - Null
+    cutting:
+      - '%с плавником%'
+
+shrimp_products:
+  - name: 'креветки очищенные'
+    product_type:
+      - Null
+    cutting:
+      - '%очищенные%'
+
+semiprocessed_products:
+  - name: 'кета пресервы'
+    fish_type:
+      - 'кета'
+    cook_method:
+      - 'Пресервы'
+
+  - name: 'Сельдь пресервы'
+    fish_type:
+      - 'сельдь'
+    cutting:
+      - '%филе%'
+      - Null
+    cook_method:
+      - 'Пресервы'
+    filling:
+      - 'в масле'
+      - 'в маринаде'
+      - 'со специями'
+      - 'в заливке'
+      - 'с овощами'
+      - 'в соусе'
+      - Null
+
+  - name: 'горбуша'
+    fish_type:
+      - 'горбуша'
+    boxing:
+      - 'Жестяная банка'
+
+macroeconomic_indicators:
+  - 'ВВП'
+  - 'Индекс пром.производства'
+  - 'Цены производителей пром.товаров'
+  - 'Производство пищевых продуктов'
+  - 'Инфляция'
+  - 'Индекс реальной зарплаты'
+
+agro_indicators:
+  - 'Поголовье скота и птицы'
+  - 'Средние цены производителей промышленных товаров с 2017 г. '
+  - 'Средние цены производителей сельскохозяйственной продукции, реализуемой сельскохозяйственными организациями с 2017 г. '
+  - 'Производство основных видов продукции в натуральном выражении  с 2017 г. (оперативные данные в соответствии с ОКПД2)'
+  - 'Наличие кормов'
+  - 'Наличие концентрированных кормов'
+  - 'Остатки продукции в сельскохозяйственных организациях с 2017 г.'
+
+agro_indicators_product_categories:
+  - 'Коровы'
+  - 'Птица'
+  - 'Свиньи'
+  - 'Субпродукты сельскохозяйственной птицы, пригодные для употребления в пищу'
+  - 'Скот и птица (в живом весе)'
+  - 'Мясо крупного рогатого скота (говядина и телятина) замороженное, в том числе для детского питания'
+  - 'Субпродукты пищевые свиные замороженные'
+  - 'Свиньи для убоя'
+  - 'Крупный рогатый скот для убоя'
+  - 'Говядина парная, остывшая или охлажденная'
+  - 'Мясо и субпродукты пищевые домашней птицы'
+  - 'Продукты из мяса'
+  - 'Продукты из мяса и мяса птицы'
+  - 'Крупный рогатый скот'
+  - 'Говядина замороженная'
+  - 'Свинина замороженная'

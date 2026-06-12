@@ -1,0 +1,214 @@
+description: "Тестирование модуля диагностики болезней птиц"
+
+evaluateOptions:
+  maxConcurrency: 1
+  delay: 2000
+
+tracing:
+  enabled: true
+
+env:
+  PROMPTFOO_REQUEST_TIMEOUT_MS: 120000
+ 
+
+# Провайдер для тестируемой системы
+providers:
+  - id: file://scripts/vetBotProvider.js
+    label: vetbot
+
+# Промпт-шаблон (используется переменная query из vars)
+prompts:
+  - "{{query}}"
+
+# DeepSeek JUDGE
+#defaultTest:
+# options:
+#   provider:
+#       id: "deepseek:deepseek-chat"
+#       config:
+#         temperature: 0.0
+
+# LM Studio JUDGE
+defaultTest:
+  options:
+    provider:
+      id: https
+      config:
+        url: '{{env.PROMPTFOO_API_URL}}/chat/completions'
+        method: POST
+        headers:
+          Content-Type: application/json
+          Authorization: 'Bearer {{env.PROMPTFOO_API_KEY}}'
+        body:
+          model: '{{env.PROMPTFOO_LOCAL_MODEL}}'
+          messages:
+            - role: user
+              content: '{{prompt}}'
+          temperature: 0.0
+          max_tokens: 1024
+        transformResponse: file://scripts/transformResponse.js
+
+
+tests:
+  - description: "Инфекционный бронхит птиц (почечная форма)"
+    vars:
+      query: "Птицы толпятся у поилок, исхудали. Обнаружен быстрый падёж цыплят. Помёт белёсый."
+      context: ""
+    assert:
+      # Context Faithfulness
+      - type: context-faithfulness
+        metric: "Контекст"
+        contextTransform: 'typeof context === "string" ? context : JSON.stringify(context)'
+        threshold: 0.8
+        weight: 0.5
+
+      # Вхождение
+      - type: icontains-any
+        metric: "Вхождение"
+        value:
+        - 'Инфекционный бронхит птиц'
+        - 'Почечная форма'
+        weight: 0.3
+
+      # LLM Rubric
+      - type: llm-rubric
+        metric: "Качество"
+        value: |
+          Оцените качество ответа по следующим критериям:
+          - Указан список предполагаемых диагнозов (количество диагнозов 3 - оценка "отлично", 2 - "удовлетворительно", 1 - "непримелимо")
+          - Обоснование для каждого диагноза
+          - Перечислена инеформация, которая необходима для точной постановки диагноза
+          Поставьте оценку от 0 до 1, где 1 - отличный ответ.
+        threshold: 0.7
+        weight: 0.2
+
+
+  - description: "Инфекционный бронхит птиц (респираторная форма)"
+    vars:
+      query: "Цыплята хрипят, чихают, дышат с открытым клювом. Выделения из носа, отек головы, цианоз гребня."
+      context: ""
+    assert:
+      # Context Faithfulness
+      - type: context-faithfulness
+        metric: "Контекст"
+        contextTransform: 'typeof context === "string" ? context : JSON.stringify(context)'
+        threshold: 0.8
+        weight: 0.5
+
+      # Вхождение
+      - type: icontains-any
+        metric: "Вхождение"
+        value:
+        - 'Инфекционный бронхит птиц'
+        - 'Респираторный'
+        weight: 0.3
+
+      # LLM Rubric
+      - type: llm-rubric
+        metric: "Качество"
+        value: |
+          Оцените качество ответа по следующим критериям:
+          - Указан список предполагаемых диагнозов (количество диагнозов 3 - оценка "отлично", 2 - "удовлетворительно", 1 - "непримелимо")
+          - Обоснование для каждого диагноза
+          - Перечислена инеформация, которая необходима для точной постановки диагноза
+          Поставьте оценку от 0 до 1, где 1 - отличный ответ.
+        threshold: 0.7
+        weight: 0.2
+
+
+  - description: "Ньюкаслская болезнь (нервная форма)"
+    vars:
+      query: "Птицы отказываются от корма, наблюдаются судороги и дрожание головы. У некоторых кур шея скручена, они двигаются кругами. Ноги и крылья парализованы."
+      context: ""
+    assert:
+      # Context Faithfulness
+      - type: context-faithfulness
+        metric: "Контекст"
+        contextTransform: 'typeof context === "string" ? context : JSON.stringify(context)'
+        threshold: 0.8
+        weight: 0.5
+
+      # Вхождение
+      - type: icontains-any
+        metric: "Вхождение"
+        value:
+        - 'Ньюкаслская болезнь'
+        - 'Newcastle Disease'
+        weight: 0.3
+
+      # LLM Rubric
+      - type: llm-rubric
+        metric: "Качество"
+        value: |
+          Оцените качество ответа по следующим критериям:
+          - Указан список предполагаемых диагнозов (количество диагнозов 3 - оценка "отлично", 2 - "удовлетворительно", 1 - "непримелимо")
+          - Обоснование для каждого диагноза
+          - Перечислена инеформация, которая необходима для точной постановки диагноза
+          Поставьте оценку от 0 до 1, где 1 - отличный ответ.
+        threshold: 0.7
+        weight: 0.2
+
+
+  - description: "Кокцидиоз"
+    vars:
+      query: "Цыплята вялые, с взъерошенным оперением, скучиваются. Обнаружен кровавый понос. Гребни и сережки побледнели. Птицы быстро худеют."
+      context: ""
+    assert:
+      # Context Faithfulness
+      - type: context-faithfulness
+        metric: "Контекст"
+        contextTransform: 'typeof context === "string" ? context : JSON.stringify(context)'
+        threshold: 0.8
+        weight: 0.5
+
+      # Вхождение
+      - type: icontains-any
+        metric: "Вхождение"
+        value:
+        - 'Кокцидиоз'
+        weight: 0.3
+
+      # LLM Rubric
+      - type: llm-rubric
+        metric: "Качество"
+        value: |
+          Оцените качество ответа по следующим критериям:
+          - Указан список предполагаемых диагнозов (количество диагнозов 3 - оценка "отлично", 2 - "удовлетворительно", 1 - "непримелимо")
+          - Обоснование для каждого диагноза
+          - Перечислена инеформация, которая необходима для точной постановки диагноза
+          Поставьте оценку от 0 до 1, где 1 - отличный ответ.
+        threshold: 0.7
+        weight: 0.2        
+
+
+  - description: "Птичий грипп"
+    vars:
+      query: "У кур резко упала яйценоскость. Птицы кашляют, чихают, из глаз текут слезы. Голова и шея опухли, сережки синеватого цвета с кровоизлияниями. Водянистый понос. Внезапная гибель птиц."
+      context: ""
+    assert:
+      # Context Faithfulness
+      - type: context-faithfulness
+        metric: "Контекст"
+        contextTransform: 'typeof context === "string" ? context : JSON.stringify(context)'
+        threshold: 0.8
+        weight: 0.5
+
+      # Вхождение
+      - type: icontains-any
+        metric: "Вхождение"
+        value:
+        - 'Птичий грипп'
+        - 'Avian Influenza'
+        weight: 0.3
+
+      # LLM Rubric
+      - type: llm-rubric
+        metric: "Качество"
+        value: |
+          Оцените качество ответа по следующим критериям:
+          - Указан список предполагаемых диагнозов (количество диагнозов 3 - оценка "отлично", 2 - "удовлетворительно", 1 - "непримелимо")
+          - Обоснование для каждого диагноза
+          - Перечислена инеформация, которая необходима для точной постановки диагноза
+          Поставьте оценку от 0 до 1, где 1 - отличный ответ.
+        threshold: 0.7
+        weight: 0.2          

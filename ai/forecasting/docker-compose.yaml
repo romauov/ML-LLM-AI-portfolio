@@ -1,0 +1,164 @@
+services:
+  redis:
+    image: redis:latest
+    command: redis-server --replica-read-only no # Запускаем Redis с отключенной режимом только для чтения для реплик
+    restart: unless-stopped
+    volumes:
+      - redis_data:/storage:rw # Монтируем том для хранения данных Redis с правами на запись
+    networks:
+      - price-predictor-network
+
+  backend:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "81:81"
+    depends_on:
+      - redis
+    volumes:
+      - ./storage:/app/storage:rw
+    networks:
+      - price-predictor-network
+      - caddy-network
+    labels:
+      - "caddy=forecasting.3090.a505.ru"
+      - "caddy.reverse_proxy={{upstreams 81}}"
+      - "caddy.encode=zstd gzip"
+
+  worker-common-tasks:
+    build:
+      context: .
+      dockerfile: workers/common_tasks/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - redis
+    networks:
+      - price-predictor-network
+    environment:
+      - NUM_WORKERS=1
+      - REDIS_PORT=6379
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 128M
+
+  worker-rapids:
+    build:
+      context: workers/rapids
+      shm_size: "2gb"
+    volumes:
+      - ./storage:/home/appuser/app/storage:rw
+    environment:
+      - CUDA_LAUNCH_BLOCKING=1
+      - NUM_WORKERS=2
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    user: "appuser"
+    networks:
+      - price-predictor-network
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2048M
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
+    restart: unless-stopped
+
+  worker-general:
+    build:
+      context: workers/general
+      shm_size: "1gb"
+    restart: unless-stopped
+    volumes:
+      - ./storage:/app/storage:rw
+    user: "appuser"
+    networks:
+      - price-predictor-network
+    environment:
+      - NUM_WORKERS=4
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+
+  worker-neuralprophet:
+    build:
+      context: workers/neuralprophet
+      shm_size: "2gb"
+    restart: unless-stopped
+    volumes:
+      - ./storage:/app/storage:rw
+    user: "appuser"
+    networks:
+      - price-predictor-network
+    environment:
+      - NUM_WORKERS=2
+      - REDIS_PORT=6379
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    depends_on:
+      - redis
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2048M
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
+
+  worker-timesfm:
+    build:
+      context: workers/timesfm
+      shm_size: "1gb"
+    restart: unless-stopped
+    volumes:
+      - ./storage:/app/storage:rw
+    user: "appuser"
+    networks:
+      - price-predictor-network
+    environment:
+      - NUM_WORKERS=2
+      - REDIS_PORT=6379
+      - HF_HOME=/app/storage/.cache/huggingface
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    depends_on:
+      - redis
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2048M
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+
+networks:
+  caddy-network:
+    name: caddy-network
+    external: true
+  price-predictor-network:
+    driver: bridge
+
+volumes:
+  redis_data:

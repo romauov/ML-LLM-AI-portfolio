@@ -1,0 +1,422 @@
+{
+  "AE": {
+    "ru": "Инфекционный энцефаломиелит птиц",
+    "en": "Avian Encephalomyelitis",
+    "ru_abbr": "AE",
+    "en_abbr": "AE",
+    "category": "elisa_tests"
+  },
+  "AI": {
+    "ru": "Птичий грипп",
+    "en": "Avian Influenza",
+    "ru_abbr": "AI",
+    "en_abbr": "AI",
+    "category": "elisa_tests"
+  },
+  "AI(ag)": {
+    "ru": "Антиген вируса птичьего гриппа",
+    "en": "Avian Influenza Antigen",
+    "ru_abbr": "AI(ag)",
+    "en_abbr": "AI(ag)",
+    "category": "elisa_tests"
+  },
+  "ALV(ag)": {
+    "ru": "Антиген вируса лейкоза птиц",
+    "en": "Avian Leukosis Virus Antigen",
+    "ru_abbr": "ALV(ag)",
+    "en_abbr": "ALV(ag)",
+    "category": "elisa_tests"
+  },
+  "ART": {
+    "ru": "Инфекционный ринотрахеит птиц",
+    "en": "Avian Rhinotracheitis / Avian reovirus",
+    "ru_abbr": "ART",
+    "en_abbr": "ART",
+    "category": "elisa_tests"
+  },
+  "BID": {
+    "ru": "Два раза в сутки (каждые 12 часов)",
+    "en": "Twice-daily administration (every 12 hours)",
+    "ru_abbr": "BID",
+    "en_abbr": "BID",
+    "category": "pharmacological"
+  },
+  "BLS": {
+    "ru": "Гепатоспленомегалия",
+    "en": "Big Liver and Spleen Disease",
+    "ru_abbr": "BLS",
+    "en_abbr": "BLS",
+    "category": "elisa_tests"
+  },
+  "CAstV Gp B": {
+    "ru": "Птичий астровирус группы B",
+    "en": "Chicken Astrovirus Group B",
+    "ru_abbr": "CAstV Gp B",
+    "en_abbr": "CAstV Gp B",
+    "category": "elisa_tests"
+  },
+  "EDS": {
+    "ru": "Вирус синдрома снижения яйценоскости",
+    "en": "Egg Drop Syndrome Virus",
+    "ru_abbr": "EDS",
+    "en_abbr": "EDS",
+    "category": "elisa_tests"
+  },
+  "EP": {
+    "ru": "Энзоотическая пневмония",
+    "en": "Enzootic pneumonia",
+    "ru_abbr": "EP",
+    "en_abbr": "EP",
+    "category": "swine_diseases"
+  },
+  "FAdV": {
+    "ru": "Аденовирус птиц группы 1",
+    "en": "Fowl Adenovirus Group 1",
+    "ru_abbr": "FAdV",
+    "en_abbr": "FAdV",
+    "category": "elisa_tests"
+  },
+  "GPS": {
+    "ru": "Болезнь Глессера",
+    "en": "Glasser's disease / Porcine polyserositis",
+    "ru_abbr": "GPS",
+    "en_abbr": "GPS",
+    "category": "swine_diseases"
+  },
+  "HPS": {
+    "ru": "Болезнь Глессера (Гемофилез)",
+    "en": "Haemophilus parasuis infection / Glasser's disease",
+    "ru_abbr": "HPS",
+    "en_abbr": "HPS",
+    "category": "swine_diseases"
+  },
+  "IM": {
+    "ru": "Внутримышечно",
+    "en": "Intramuscular administration",
+    "ru_abbr": "IM",
+    "en_abbr": "IM",
+    "category": "pharmacological"
+  },
+  "IV": {
+    "ru": "Внутривенно",
+    "en": "Intravenous administration",
+    "ru_abbr": "IV",
+    "en_abbr": "IV",
+    "category": "pharmacological"
+  },
+  "InfA Multi": {
+    "ru": "Различные серотипы вируса гриппа типа А",
+    "en": "Multispecies Influenza Type A",
+    "ru_abbr": "InfA Multi",
+    "en_abbr": "InfA Multi",
+    "category": "elisa_tests"
+  },
+  "M.hyo": {
+    "ru": "Микоплазмоз свиней (микоплазменная пневмония)",
+    "en": "Mycoplasma hyopneumoniae infection / Enzootic pneumonia",
+    "ru_abbr": "M.hyo",
+    "en_abbr": "M.hyo",
+    "category": "swine_diseases"
+  },
+  "MBC": {
+    "ru": "Минимальная бактерицидная концентрация",
+    "en": "Minimum bactericidal concentration",
+    "ru_abbr": "MBC",
+    "en_abbr": "MBC",
+    "category": "pharmacological"
+  },
+  "MIC": {
+    "ru": "Минимальная ингибирующая концентрация",
+    "en": "Minimum inhibitory concentration",
+    "ru_abbr": "MIC",
+    "en_abbr": "MIC",
+    "category": "pharmacological"
+  },
+  "Mg": {
+    "ru": "Микоплазма галлисептикум",
+    "en": "Mycoplasma gallisepticum",
+    "ru_abbr": "Mg",
+    "en_abbr": "Mg",
+    "category": "elisa_tests"
+  },
+  "Mg/Ms": {
+    "ru": "Микоплазма галлисептикум и Микоплазма синовиа",
+    "en": "Mycoplasma gallisepticum - synoviae (Combined)",
+    "ru_abbr": "Mg/Ms",
+    "en_abbr": "Mg/Ms",
+    "category": "elisa_tests"
+  },
+  "Mm": {
+    "ru": "Микоплазма мелеагридис",
+    "en": "Mycoplasma meleagridis",
+    "ru_abbr": "Mm",
+    "en_abbr": "Mm",
+    "category": "elisa_tests"
+  },
+  "Ms": {
+    "ru": "Микоплазма синовиа",
+    "en": "Mycoplasma synoviae",
+    "ru_abbr": "Ms",
+    "en_abbr": "Ms",
+    "category": "elisa_tests"
+  },
+  "NDV": {
+    "ru": "Вирус болезни Ньюкасла",
+    "en": "Newcastle Disease Virus",
+    "ru_abbr": "NDV",
+    "en_abbr": "NDV",
+    "category": "elisa_tests"
+  },
+  "NDV-F": {
+    "ru": "Вирус болезни Ньюкасла — Белок слияния",
+    "en": "Newcastle Disease Virus - Fusion Protein",
+    "ru_abbr": "NDV-F",
+    "en_abbr": "NDV-F",
+    "category": "elisa_tests"
+  },
+  "ORT": {
+    "ru": "Орнитобактериум ринотрахеале",
+    "en": "Ornithobacterium rhinotracheale",
+    "ru_abbr": "ORT",
+    "en_abbr": "ORT",
+    "category": "elisa_tests"
+  },
+  "PO": {
+    "ru": "Перорально",
+    "en": "Per os, oral administration",
+    "ru_abbr": "PO",
+    "en_abbr": "PO",
+    "category": "pharmacological"
+  },
+  "QID": {
+    "ru": "Четыре раза в сутки (каждые 6 часов)",
+    "en": "4 times daily administration (every 6 hours)",
+    "ru_abbr": "QID",
+    "en_abbr": "QID",
+    "category": "pharmacological"
+  },
+  "REV": {
+    "ru": "Вирус ретикулоэндотелиоза",
+    "en": "Reticuloendotheliosis Virus",
+    "ru_abbr": "REV",
+    "en_abbr": "REV",
+    "category": "elisa_tests"
+  },
+  "SC": {
+    "ru": "Подкожно",
+    "en": "Subcutaneous administration",
+    "ru_abbr": "SC",
+    "en_abbr": "SC",
+    "category": "pharmacological"
+  },
+  "SID": {
+    "ru": "Один раз в сутки",
+    "en": "Single daily administration",
+    "ru_abbr": "SID",
+    "en_abbr": "SID",
+    "category": "pharmacological"
+  },
+  "Salm Gp B": {
+    "ru": "Сальмонелла группы B",
+    "en": "Salmonella Group B",
+    "ru_abbr": "Salm Gp B",
+    "en_abbr": "Salm Gp B",
+    "category": "elisa_tests"
+  },
+  "Salm Gp B/D": {
+    "ru": "Сальмонелла группы B и D",
+    "en": "Salmonella Group B and D",
+    "ru_abbr": "Salm Gp B/D",
+    "en_abbr": "Salm Gp B/D",
+    "category": "elisa_tests"
+  },
+  "Salm Gp D": {
+    "ru": "Сальмонелла группы D",
+    "en": "Salmonella Group D",
+    "ru_abbr": "Salm Gp D",
+    "en_abbr": "Salm Gp D",
+    "category": "elisa_tests"
+  },
+  "TID": {
+    "ru": "Три раза в сутки (каждые 8 часов)",
+    "en": "3 times daily administration (every 8 hours)",
+    "ru_abbr": "TID",
+    "en_abbr": "TID",
+    "category": "pharmacological"
+  },
+  "circovirus": {
+    "ru": "Протокол расследования цирковируса свиней (PCV2/PCV3)",
+    "en": "Circovirus investigation protocol",
+    "ru_abbr": "circovirus",
+    "en_abbr": "circovirus",
+    "category": "investigation_protocols"
+  },
+  "neonatal_diarrhea": {
+    "ru": "Протокол расследования диареи у поросят 0-15 дней",
+    "en": "Neonatal diarrhea investigation protocol",
+    "ru_abbr": "neonatal_diarrhea",
+    "en_abbr": "neonatal_diarrhea",
+    "category": "investigation_protocols"
+  },
+  "prrs": {
+    "ru": "Протокол расследования РРСС (репродуктивные + респираторные признаки)",
+    "en": "PRRS investigation protocol",
+    "ru_abbr": "prrs",
+    "en_abbr": "prrs",
+    "category": "investigation_protocols"
+  },
+  "respiratory": {
+    "ru": "Протокол расследования респираторных проблем (кашель, одышка)",
+    "en": "Respiratory problems investigation protocol",
+    "ru_abbr": "respiratory",
+    "en_abbr": "respiratory",
+    "category": "investigation_protocols"
+  },
+  "АМПВ": {
+    "ru": "Авиарный метапневмовирус",
+    "en": "Avian metapneumovirus / Turkey rhinotracheitis virus",
+    "ru_abbr": "АМПВ",
+    "en_abbr": "aMPV",
+    "category": "poultry_diseases"
+  },
+  "АПП": {
+    "ru": "Актинобациллезная плевропневмония свиней",
+    "en": "Actinobacillus pleuropneumoniae infection / Porcine pleuropneumonia",
+    "ru_abbr": "АПП",
+    "en_abbr": "APP",
+    "category": "swine_diseases"
+  },
+  "ВАЦ": {
+    "ru": "Вирус анемии цыплят",
+    "en": "Chicken anemia virus",
+    "ru_abbr": "ВАЦ",
+    "en_abbr": "CAV",
+    "category": "poultry_diseases"
+  },
+  "ГП": {
+    "ru": "Грипп птиц",
+    "en": "Avian influenza",
+    "ru_abbr": "ГП",
+    "en_abbr": "AI",
+    "category": "poultry_diseases"
+  },
+  "ИББ": {
+    "ru": "Инфекционная бурсальная болезнь",
+    "en": "Infectious bursal disease / Gumboro disease",
+    "ru_abbr": "ИББ",
+    "en_abbr": "IBD",
+    "category": "poultry_diseases"
+  },
+  "ИБК": {
+    "ru": "Инфекционный бронхит кур",
+    "en": "Infectious bronchitis virus",
+    "ru_abbr": "ИБК",
+    "en_abbr": "IBV",
+    "category": "poultry_diseases"
+  },
+  "ИБП": {
+    "ru": "Инфекционный бронхит птиц",
+    "en": "Infectious bronchitis of chickens",
+    "ru_abbr": "ИБП",
+    "en_abbr": "IB",
+    "category": "poultry_diseases"
+  },
+  "ИК": {
+    "ru": "Инфекционная кориза",
+    "en": "Infectious coryza of chickens",
+    "ru_abbr": "ИК",
+    "en_abbr": null,
+    "category": "poultry_diseases"
+  },
+  "ИЛТ": {
+    "ru": "Инфекционный ларинготрахеит",
+    "en": "Infectious laryngotracheitis",
+    "ru_abbr": "ИЛТ",
+    "en_abbr": "ILT",
+    "category": "poultry_diseases"
+  },
+  "ИЛЭ": {
+    "ru": "Илеит",
+    "en": "Porcine ileitis / Lawsonia intracellularis infection",
+    "ru_abbr": "ИЛЭ",
+    "en_abbr": "ILE",
+    "category": "swine_diseases"
+  },
+  "МГ": {
+    "ru": "Микоплазмоз птиц (Mycoplasma gallisepticum)",
+    "en": "Mycoplasma gallisepticum infection",
+    "ru_abbr": "МГ",
+    "en_abbr": "MG",
+    "category": "poultry_diseases"
+  },
+  "НБ": {
+    "ru": "Ньюкаслская болезнь",
+    "en": "Newcastle disease",
+    "ru_abbr": "НБ",
+    "en_abbr": "ND",
+    "category": "poultry_diseases"
+  },
+  "ПГ": {
+    "ru": "Птичий грипп / Высокопатогенный грипп птиц",
+    "en": "Highly pathogenic avian influenza",
+    "ru_abbr": "ПГ",
+    "en_abbr": "HPAI",
+    "category": "poultry_diseases"
+  },
+  "ПЭС": {
+    "ru": "Пролиферативная энтеропатия свиней",
+    "en": "Porcine proliferative enteropathy",
+    "ru_abbr": "ПЭС",
+    "en_abbr": "PPE",
+    "category": "swine_diseases"
+  },
+  "РЕО": {
+    "ru": "Реовирусная инфекция птиц",
+    "en": "Avian reovirus infection",
+    "ru_abbr": "РЕО",
+    "en_abbr": "REO",
+    "category": "poultry_diseases"
+  },
+  "РРСС": {
+    "ru": "Репродуктивно-респираторный синдром свиней",
+    "en": "Porcine reproductive and respiratory syndrome",
+    "ru_abbr": "РРСС",
+    "en_abbr": "PRRS",
+    "category": "swine_diseases"
+  },
+  "ЦВБС-2": {
+    "ru": "Цирковирусная болезнь свиней 2 типа",
+    "en": "Porcine circovirus 2 infection",
+    "ru_abbr": "ЦВБС-2",
+    "en_abbr": "PCV2",
+    "category": "swine_diseases"
+  },
+  "ЦИС": {
+    "ru": "Цирковирусная инфекция свиней",
+    "en": "Porcine circovirus associated diseases",
+    "ru_abbr": "ЦИС",
+    "en_abbr": "PCVAD",
+    "category": "swine_diseases"
+  },
+  "APP": "__ref__АПП",
+  "CAV": "__ref__ВАЦ",
+  "HPAI": "__ref__ПГ",
+  "IB": "__ref__ИБП",
+  "IBD": "__ref__ИББ",
+  "IBV": "__ref__ИБК",
+  "ILE": "__ref__ИЛЭ",
+  "ILT": "__ref__ИЛТ",
+  "MG": "__ref__МГ",
+  "ND": "__ref__НБ",
+  "PCV2": "__ref__ЦВБС-2",
+  "PCVAD": "__ref__ЦИС",
+  "PPE": "__ref__ПЭС",
+  "PRRS": "__ref__РРСС",
+  "REO": "__ref__РЕО",
+  "aMPV": "__ref__АМПВ",
+  "АГ": "__ref__ГП",
+  "БГ": "__ref__ИББ",
+  "БН": "__ref__НБ",
+  "ИСБ": "__ref__ИББ",
+  "ЛТ": "__ref__ИЛТ"
+}

@@ -1,0 +1,16 @@
+name: base
+channels:
+  - rapidsai
+  - conda-forge
+  - nvidia
+dependencies:
+  - python=3.13
+  - cudf=26.02
+  - cuml=26.02
+  - pandas==2.3.3
+  - optuna==3.6.1
+  - pip
+  - pip:
+    - pydantic==2.12.5
+    - rq==2.7.0
+    - redis==7.2.1

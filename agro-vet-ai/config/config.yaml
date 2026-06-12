@@ -1,0 +1,86 @@
+count_history_messages: 10
+max_file_size_mb: 20
+max_filtered_topics: 2
+
+rag:
+  search:
+    doc_limit: 25
+    similarity_threshold: 0.75
+
+# LLM Models
+llm_models:
+  inline:
+    llm: "cyankiwi/Qwen3-30B-A3B-Instruct-2507-AWQ-4bit"
+  vsegpt:
+    llm: "minimax/minimax-m2.7"
+    embedding: "emb-openai/text-embedding-3-small"
+    embedding_column: "embedding"
+  openrouter:
+    llm: "minimax/minimax-m2.7"
+    embedding: "qwen/qwen3-embedding-4b"
+    embedding_column: "embedding_qwen3_embedding_4b"
+    embedding_query_instruction: "Instruct: Найди релевантные ветеринарные фрагменты о болезнях и лечении сельскохозяйственных животных, которые отвечают на вопрос\nQuery: "
+
+  tool_model: "openai/gpt-4o-mini"
+  evaluation_model: "openai/gpt-4o-mini"
+  ocr_model: "vis-google/gemini-2.5-flash"
+
+# Hyperparameters for LLM models
+llm_hyperparameters:
+  inline:
+    temperature: 0.6
+    top_p: 0.95
+    max_tokens: 2000
+    frequency_penalty: 0.1
+    presence_penalty: 0.1
+
+  vsegpt:
+    temperature: 0.7
+    top_p: 0.8
+    max_tokens: 2000
+    frequency_penalty: 0.1
+    presence_penalty: 0.1
+
+extra_headers:
+  X-title: "agro-vet-ai"
+
+
+librarian:
+  main_agent:
+    llm_hyperparameters:
+      temperature: 0.1
+      top_p: 0.1
+      max_tokens: 5000
+      frequency_penalty: 0.1
+      presence_penalty: 0.1
+    max_attempts: 10
+
+  search:
+    doc_limit: 3
+    similarity_threshold: 0.5
+
+
+pharmacist:
+  main_agent:
+    llm_hyperparameters:
+      temperature: 0.1
+      top_p: 0.1
+      max_tokens: 5000
+      frequency_penalty: 0.1
+      presence_penalty: 0.1
+    max_attempts: 5
+
+  search:
+    chunk_limit: 30
+    similarity_threshold: 0.4
+    overflow_threshold: 2
+
+
+router_agent:
+  llm_hyperparameters:
+    temperature: 0.1
+    top_p: 0.1
+    max_tokens: 5000
+    frequency_penalty: 0.1
+    presence_penalty: 0.1
+  max_attempts: 10

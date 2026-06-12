@@ -1,0 +1,140 @@
+n_forecasts: 1
+optuna_n_trials: 1
+cross_validation_k_folds: 2
+outliers_sliding_window_size: 12
+use_only_light_models: False
+min_unique_points: 2
+freq: 'W-MON'
+years_of_historical_data: 1
+
+neuralprophet:
+  model:
+    drop_missing: True
+    unknown_data_normalization: True
+    trend_global_local: 'local'
+    season_global_local: 'local'
+    yearly_seasonality: True
+    weekly_seasonality: False
+    daily_seasonality: False
+    learning_rate: 1e-4
+    n_lags: 13
+    n_forecasts: 13
+  train:
+    ew_lag: 3
+    freq: 'W-MON'
+    n_epochs: 1
+
+
+exponential_smoothing:
+  model:
+    seasonal_periods: 12
+    trend: 'additive'
+    seasonal: 'additive'
+    damped_trend: False
+    use_boxcox: False
+    freq: 'W-MON'
+  train:
+    ew_lag: 3
+
+prophet:
+  model:
+    growth: 'linear'
+    n_changepoints: 25
+    changepoint_range: 0.8
+    yearly_seasonality: True
+    weekly_seasonality: 'auto'
+    daily_seasonality: 'auto'
+    seasonality_mode: 'additive'
+    seasonality_prior_scale: 10.0
+    holidays_prior_scale: 10.0
+    changepoint_prior_scale: 0.05
+    holidays_mode: 'additive'
+  train:
+    ew_lag: 3
+    freq: 'W-MON'
+
+theta:
+  model:
+    period: 12
+  train:
+    theta: 2
+    ew_lag: 3
+    use_mle: True
+    freq: 'W-MON'
+
+arima:
+  model:
+    p: 1
+    d: 1
+    q: 0
+    P: 1
+    D: 1
+    Q: 0
+    s: 12
+    simple_differencing: False
+    fit_intercept: True
+  train:
+    method: 'css'
+    freq: 'W-MON'
+
+scheduler:
+  forecasting:
+    day_of_week: 'sat'
+    hour: 21
+    minute: 0
+  dashboards:
+    hour: 5
+    minute: 0
+
+meat_products:
+  - name: 'Говядина полутуши'
+    product:
+      - 'Говядина'
+    product_type:
+      - 'полутуши'
+
+seafood_products:
+  - name: 'кальмар'
+    product_type:
+      - 'кальмар гигантский'
+    goods_type:
+      - 'филе'
+
+caviar_products:
+  - name: 'горбуша'
+    product_type:
+      - 'горбуша'
+
+fish_products:
+  - name: 'горбуша'
+    fish_type:
+      - 'горбуша'
+    product_type:
+      - 'целый'
+      - 'тушка'
+      - Null
+    cutting:
+      - '%потр%'
+
+shrimp_products:
+  - name: 'креветки очищенные'
+    product_type:
+      - Null
+    cutting:
+      - '%очищенные%'
+
+semiprocessed_products:
+  - name: 'кета пресервы'
+    fish_type:
+      - 'кета'
+    cook_method:
+      - 'Пресервы'
+
+macroeconomic_indicators:
+  - 'ВВП'
+
+agro_indicators:
+  - 'Поголовье скота и птицы'
+
+agro_indicators_product_categories:
+  - 'Коровы'

@@ -1,0 +1,33 @@
+# Базовый образ
+FROM python:3.11-slim
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Установка системных зависимостей
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libreoffice \
+    poppler-utils \
+    postgresql-client && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Копируем зависимости и устанавливаем Python пакеты
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Копируем все файлы проекта
+COPY app/ app
+COPY config/ config
+COPY knowledge/diagnostics/  knowledge/diagnostics
+COPY .env __init__.py main.py alembic.ini database_data/scripts/run_migrations_and_start.sh ./
+
+# Делаем скрипт выполнения миграций исполняемым
+RUN chmod +x ./run_migrations_and_start.sh
+
+EXPOSE 8000
+
+# Запуск скрипта миграций и основного приложения
+ENTRYPOINT ["./run_migrations_and_start.sh"]
+CMD ["python3", "main.py"]

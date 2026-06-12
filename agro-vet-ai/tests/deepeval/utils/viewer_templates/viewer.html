@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepEval Test Results Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .live-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+
+        .live-dot.active {
+            background: #28a745;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .btn-live {
+            padding: 6px 14px;
+            font-size: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .btn-live.active {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .file-selector {
+            margin-top: 15px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 300px;
+            cursor: pointer;
+        }
+
+        .summary {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .summary-item {
+            padding: 10px 15px;
+            border-radius: 4px;
+            background: #f8f8f8;
+        }
+
+        .summary-item.passed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .summary-item.failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .test-card {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .test-card.new-card {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .test-header {
+            padding: 12px 16px;
+            border-left: 4px solid #ddd;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .test-header:hover {
+            background: #f8f8f8;
+        }
+
+        .test-header.passed {
+            border-left-color: #28a745;
+        }
+
+        .test-header.failed {
+            border-left-color: #dc3545;
+        }
+
+        .test-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .test-name {
+            font-weight: 500;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .test-status {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 10px;
+        }
+
+        .test-status.passed {
+            background: #28a745;
+            color: white;
+        }
+
+        .test-status.failed {
+            background: #dc3545;
+            color: white;
+        }
+
+        .test-summary {
+            display: grid;
+            grid-template-columns: minmax(220px, 1fr) minmax(320px, 1.5fr) minmax(200px, 1fr);
+            gap: 0;
+            font-size: 13px;
+            color: #555;
+            margin-top: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .test-summary-item {
+            display: flex;
+            flex-direction: column;
+            padding: 8px 12px;
+            border-right: 1px solid #e0e0e0;
+            min-width: 0;
+        }
+
+        .test-summary-item:last-child {
+            border-right: none;
+        }
+
+        .test-summary-label {
+            font-weight: 600;
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .test-summary-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            word-break: break-word;
+        }
+
+        .test-summary-score {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .score-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .score-badge {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .score-badge.passed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .score-badge.failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .average-score {
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .average-score.passed {
+            color: #155724;
+        }
+
+        .average-score.failed {
+            color: #721c24;
+        }
+
+        .test-content {
+            display: none;
+            padding: 0;
+        }
+
+        .test-content.active {
+            display: block;
+        }
+
+        .content-section {
+            margin-bottom: 20px;
+        }
+
+        .content-section h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .text-block {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 3px solid #007bff;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .metric-card {
+            background: #f8f8f8;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ddd;
+        }
+
+        .metric-card.passed {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+
+        .metric-card.failed {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .metric-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .metric-score {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .metric-score.passed {
+            color: #155724;
+        }
+
+        .metric-score.failed {
+            color: #721c24;
+        }
+
+        .metric-details {
+            font-size: 14px;
+            margin-top: 8px;
+            color: #555;
+        }
+
+        .metric-reason {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .evaluation-steps {
+            margin-top: 10px;
+        }
+
+        .evaluation-steps h4 {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .evaluation-steps ol {
+            margin-left: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .evaluation-steps li {
+            margin-bottom: 6px;
+        }
+
+        .error-block {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            padding: 15px;
+            color: #721c24;
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .duration {
+            font-size: 12px;
+            color: #666;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-row">
+                <h1>DeepEval Test Results Viewer</h1>
+                <div class="live-controls">
+                    <div class="live-indicator">
+                        <span class="live-dot" id="liveDot"></span>
+                        <span id="liveLabel">Auto-refresh off</span>
+                    </div>
+                    <button class="btn-live" id="btnLive" onclick="toggleLive()">Live</button>
+                </div>
+            </div>
+            <div class="file-selector">
+                <label for="testFileSelect">Выберите результаты теста: </label>
+                <select id="testFileSelect">
+                    <option value="">Загрузка...</option>
+                </select>
+            </div>
+            <div id="summary" class="summary"></div>
+        </header>
+
+        <div id="testsContainer"></div>
+    </div>
+
+    <script>
+        let currentData = null;
+        let currentFilePath = null;
+        let liveMode = false;
+        let liveInterval = null;
+        let renderedTestCount = 0;
+        let expandedTests = new Set();
+
+        // === Live mode ===
+
+        function toggleLive() {
+            liveMode = !liveMode;
+            const dot = document.getElementById('liveDot');
+            const label = document.getElementById('liveLabel');
+            const btn = document.getElementById('btnLive');
+
+            if (liveMode) {
+                dot.classList.add('active');
+                label.textContent = 'Auto-refresh on';
+                btn.classList.add('active');
+                startPolling();
+            } else {
+                dot.classList.remove('active');
+                label.textContent = 'Auto-refresh off';
+                btn.classList.remove('active');
+                stopPolling();
+            }
+        }
+
+        function startPolling() {
+            stopPolling();
+            // Сначала обновляем список файлов (может появиться новый)
+            pollFileList();
+            liveInterval = setInterval(() => {
+                pollFileList();
+                if (currentFilePath) {
+                    pollResults();
+                }
+            }, 3000);
+        }
+
+        function stopPolling() {
+            if (liveInterval) {
+                clearInterval(liveInterval);
+                liveInterval = null;
+            }
+        }
+
+        async function pollFileList() {
+            try {
+                const response = await fetch('../../results/');
+                const text = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                const links = doc.querySelectorAll('a');
+
+                const jsonFiles = [];
+                links.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href && href.endsWith('.json')) {
+                        jsonFiles.push(href);
+                    }
+                });
+                jsonFiles.sort().reverse();
+
+                const select = document.getElementById('testFileSelect');
+                const currentValue = select.value;
+                const existingOptions = new Set();
+                for (const opt of select.options) {
+                    existingOptions.add(opt.value);
+                }
+
+                // Добавляем только новые файлы
+                const newestFile = jsonFiles.length > 0 ? `../../results/${jsonFiles[0]}` : null;
+                let hasNew = false;
+                for (const file of jsonFiles) {
+                    const val = `../../results/${file}`;
+                    if (!existingOptions.has(val)) {
+                        hasNew = true;
+                        break;
+                    }
+                }
+
+                if (hasNew) {
+                    select.innerHTML = '<option value="">-- Выберите файл --</option>';
+                    jsonFiles.forEach(file => {
+                        const option = document.createElement('option');
+                        option.value = `../../results/${file}`;
+                        option.textContent = file;
+                        select.appendChild(option);
+                    });
+
+                    // Автопереключение на самый новый файл в live mode
+                    if (liveMode && newestFile && newestFile !== currentValue) {
+                        select.value = newestFile;
+                        currentFilePath = newestFile;
+                        renderedTestCount = 0;
+                        currentData = null;
+                        loadTestResults(newestFile);
+                    } else if (currentValue) {
+                        select.value = currentValue;
+                    }
+                }
+            } catch (e) {
+                // Тихо игнорируем ошибки polling
+            }
+        }
+
+        async function pollResults() {
+            if (!currentFilePath) return;
+            try {
+                const response = await fetch(currentFilePath + '?t=' + Date.now());
+                const data = await response.json();
+
+                if (!currentData || data.tests.length !== currentData.tests.length) {
+                    const prevCount = currentData ? currentData.tests.length : 0;
+                    currentData = data;
+                    renderIncremental(prevCount);
+                }
+            } catch (e) {
+                // Тихо игнорируем
+            }
+        }
+
+        // === Загрузка ===
+
+        async function loadFileList() {
+            try {
+                const response = await fetch('../../results/');
+                const text = await response.text();
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                const links = doc.querySelectorAll('a');
+
+                const jsonFiles = [];
+                links.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href && href.endsWith('.json')) {
+                        jsonFiles.push(href);
+                    }
+                });
+
+                jsonFiles.sort().reverse();
+
+                const select = document.getElementById('testFileSelect');
+                select.innerHTML = '<option value="">-- Выберите файл --</option>';
+
+                if (jsonFiles.length === 0) {
+                    select.innerHTML = '<option value="">Нет результатов тестов</option>';
+                    return;
+                }
+
+                jsonFiles.forEach(file => {
+                    const option = document.createElement('option');
+                    option.value = `../../results/${file}`;
+                    option.textContent = file;
+                    select.appendChild(option);
+                });
+
+                if (jsonFiles.length > 0) {
+                    const path = `../../results/${jsonFiles[0]}`;
+                    select.value = path;
+                    currentFilePath = path;
+                    loadTestResults(path);
+                }
+            } catch (error) {
+                console.error('Error loading file list:', error);
+                document.getElementById('testFileSelect').innerHTML =
+                    '<option value="">Ошибка загрузки списка файлов</option>';
+            }
+        }
+
+        async function loadTestResults(filePath) {
+            try {
+                currentFilePath = filePath;
+                renderedTestCount = 0;
+                expandedTests.clear();
+                const response = await fetch(filePath + '?t=' + Date.now());
+                currentData = await response.json();
+                renderResults();
+            } catch (error) {
+                console.error('Error loading test results:', error);
+                document.getElementById('testsContainer').innerHTML =
+                    '<div class="no-data">Ошибка загрузки результатов</div>';
+            }
+        }
+
+        // === Рендеринг ===
+
+        function renderSummary() {
+            if (!currentData) return;
+            const summary = document.getElementById('summary');
+
+            // Средние оценки по каждой метрике
+            const metricSums = {};
+            const metricCounts = {};
+            for (const test of currentData.tests) {
+                if (!test.metrics) continue;
+                for (const m of test.metrics) {
+                    if (m.score === null || isNaN(m.score)) continue;
+                    metricSums[m.name] = (metricSums[m.name] || 0) + m.score;
+                    metricCounts[m.name] = (metricCounts[m.name] || 0) + 1;
+                }
+            }
+
+            let avgHtml = '';
+            const metricNames = Object.keys(metricSums);
+            if (metricNames.length > 0) {
+                const badges = metricNames.map(name => {
+                    const avg = metricSums[name] / metricCounts[name];
+                    const cls = avg >= 0.5 ? 'passed' : 'failed';
+                    return `<span class="score-badge ${cls}">${name}: ${avg.toFixed(2)}</span>`;
+                }).join(' ');
+
+                const allScores = metricNames.map(n => metricSums[n] / metricCounts[n]);
+                const globalAvg = allScores.reduce((a, b) => a + b, 0) / allScores.length;
+                const globalCls = globalAvg >= 0.5 ? 'passed' : 'failed';
+
+                avgHtml = `
+                    <div class="summary-item" style="flex-grow: 1;">
+                        <div style="margin-bottom: 4px;"><strong>Средние оценки:</strong></div>
+                        <div class="score-badges">${badges}</div>
+                        <div class="average-score ${globalCls}" style="margin-top: 4px;">Общее среднее: ${globalAvg.toFixed(2)}</div>
+                    </div>
+                `;
+            }
+
+            summary.innerHTML = `
+                <div class="summary-item">
+                    <strong>Всего:</strong> ${currentData.summary.total}
+                </div>
+                <div class="summary-item passed">
+                    <strong>Пройдено:</strong> ${currentData.summary.passed}
+                </div>
+                <div class="summary-item failed">
+                    <strong>Провалено:</strong> ${currentData.summary.failed}
+                </div>
+                <div class="summary-item">
+                    <strong>Время:</strong> ${new Date(currentData.summary.timestamp).toLocaleString('ru-RU')}
+                </div>
+                ${avgHtml}
+            `;
+        }
+
+        function renderResults() {
+            if (!currentData) return;
+            renderSummary();
+
+            const container = document.getElementById('testsContainer');
+            if (currentData.tests.length === 0) {
+                container.innerHTML = '<div class="no-data">Нет результатов тестов</div>';
+                renderedTestCount = 0;
+                return;
+            }
+
+            container.innerHTML = '';
+            renderedTestCount = 0;
+            renderIncremental(0);
+        }
+
+        function renderIncremental(fromIndex) {
+            if (!currentData) return;
+            renderSummary();
+
+            const container = document.getElementById('testsContainer');
+            const tests = currentData.tests;
+
+            for (let index = fromIndex; index < tests.length; index++) {
+                const test = tests[index];
+                const card = createTestCard(test, index, index >= fromIndex && fromIndex > 0);
+                container.appendChild(card);
+            }
+            renderedTestCount = tests.length;
+        }
+
+        function createTestCard(test, index, isNew) {
+            const statusClass = test.status === 'passed' ? 'passed' : 'failed';
+            const hasMetrics = test.metrics && test.metrics.length > 0;
+            const hasInput = test.input !== undefined;
+            const hasOutput = test.actual_output !== undefined;
+
+            const shortInput = hasInput ? truncate(test.input, 100) : 'N/A';
+            const shortOutput = hasOutput ? truncate(test.actual_output, 150) : 'N/A';
+            const metricsScore = hasMetrics ? renderMetricsScore(test.metrics) : {badges: '', average: ''};
+
+            const card = document.createElement('div');
+            card.className = 'test-card' + (isNew ? ' new-card' : '');
+            card.innerHTML = `
+                <div class="test-header ${statusClass}" onclick="toggleTest(${index})">
+                    <div class="test-header-row">
+                        <div class="test-name">${extractTestName(test.test_name)}</div>
+                        <div>
+                            <span class="duration">${test.duration.toFixed(1)}s</span>
+                            <span class="test-status ${statusClass}">${test.status}</span>
+                        </div>
+                    </div>
+                    <div class="test-summary">
+                        <div class="test-summary-item">
+                            <div class="test-summary-label">Запрос</div>
+                            <div class="test-summary-text">${escapeHtml(shortInput)}</div>
+                        </div>
+                        <div class="test-summary-item">
+                            <div class="test-summary-label">Ответ</div>
+                            <div class="test-summary-text">${escapeHtml(shortOutput)}</div>
+                        </div>
+                        <div class="test-summary-item">
+                            <div class="test-summary-label">Оценки</div>
+                            <div class="test-summary-score">
+                                <div class="score-badges">${metricsScore.badges}</div>
+                                ${metricsScore.average}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-content${expandedTests.has(index) ? ' active' : ''}" id="test-${index}">
+                    ${hasInput ? `
+                    <div class="content-section" style="padding: 20px; border-bottom: 1px solid #e0e0e0;">
+                        <h3>Запрос пользователя</h3>
+                        <div class="text-block">${escapeHtml(test.input)}</div>
+                    </div>
+                    ` : ''}
+                    ${hasOutput ? `
+                    <div class="content-section" style="padding: 20px; background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                        <h3>Ответ модели</h3>
+                        <div class="text-block" style="background: white;">${escapeHtml(test.actual_output)}</div>
+                    </div>
+                    ` : ''}
+                    ${hasMetrics ? `
+                    <div style="padding: 20px;">
+                        <h3 style="margin-bottom: 15px; font-size: 18px; color: #333;">Оценка качества</h3>
+                        ${renderMetrics(test.metrics)}
+                    </div>
+                    ` : ''}
+                    ${test.error ? `
+                    <div class="content-section" style="padding: 20px;">
+                        <h3>Ошибка выполнения теста</h3>
+                        <div class="error-block">${escapeHtml(test.error)}</div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            return card;
+        }
+
+        function renderMetrics(metrics) {
+            return metrics.map(metric => {
+                const statusClass = metric.success ? 'passed' : 'failed';
+                return `
+                    <div class="metric-card ${statusClass}">
+                        <div class="metric-header">
+                            <div class="metric-name">${metric.name}</div>
+                            <div class="metric-score ${statusClass}">
+                                Score: ${metric.score !== null ? metric.score.toFixed(2) : 'N/A'}
+                                (threshold: ${metric.threshold})
+                            </div>
+                        </div>
+                        <div class="metric-details">
+                            <strong>Статус:</strong> ${metric.success ? '✓ Пройден' : '✗ Провален'}
+                        </div>
+                        ${metric.reason ? `
+                            <div class="metric-reason">
+                                <strong>Объяснение:</strong><br>
+                                ${escapeHtml(metric.reason)}
+                            </div>
+                        ` : ''}
+                        ${metric.evaluation_steps && metric.evaluation_steps.length > 0 ? `
+                            <div class="evaluation-steps">
+                                <h4>Шаги оценки:</h4>
+                                <ol>
+                                    ${metric.evaluation_steps.map(step =>
+                                        `<li>${escapeHtml(step)}</li>`
+                                    ).join('')}
+                                </ol>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // === Утилиты ===
+
+        function toggleTest(index) {
+            const content = document.getElementById(`test-${index}`);
+            content.classList.toggle('active');
+            if (content.classList.contains('active')) {
+                expandedTests.add(index);
+            } else {
+                expandedTests.delete(index);
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function truncate(text, maxLength) {
+            if (text.length <= maxLength) return text;
+            return text.substring(0, maxLength) + '...';
+        }
+
+        function extractTestName(fullName) {
+            // "test_runner.py::test_evaluation[module::test_id]" -> "test_id"
+            const match = fullName.match(/\[.*::(.+)\]/);
+            if (match) return match[1];
+            // "retrieval_evaluation::query_5[pathogenesis|ru]" -> "query_5[pathogenesis|ru]"
+            const match2 = fullName.match(/::(.+)/);
+            return match2 ? match2[1] : fullName;
+        }
+
+        function renderMetricsScore(metrics) {
+            const badges = metrics.map(metric => {
+                const statusClass = metric.success ? 'passed' : 'failed';
+                const score = metric.score !== null ? metric.score.toFixed(2) : 'N/A';
+                return `<span class="score-badge ${statusClass}">${metric.name}: ${score}</span>`;
+            }).join('');
+
+            const scores = metrics
+                .map(m => m.score)
+                .filter(s => s !== null && !isNaN(s));
+
+            if (scores.length === 0) {
+                return { badges: badges, average: '' };
+            }
+
+            const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+            const allPassed = metrics.every(m => m.success);
+            const avgClass = allPassed ? 'passed' : 'failed';
+
+            return {
+                badges: badges,
+                average: `<div class="average-score ${avgClass}">Среднее: ${avgScore.toFixed(2)}</div>`
+            };
+        }
+
+        // === Инициализация ===
+
+        document.getElementById('testFileSelect').addEventListener('change', (e) => {
+            if (e.target.value) {
+                loadTestResults(e.target.value);
+            }
+        });
+
+        loadFileList();
+    </script>
+</body>
+</html>

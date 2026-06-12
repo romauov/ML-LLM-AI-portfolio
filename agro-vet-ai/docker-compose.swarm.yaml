@@ -1,0 +1,126 @@
+version: '3.8'
+services:
+  vetbot_postgres:
+    image: vetbot_postgres_image
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${DB_PORT_HOST}:${DB_PORT_CONTAINER}"
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    networks:
+      - network
+
+  app:
+    image: vetbot_app_image
+    ports:
+      - "0.0.0.0:${API_SERVICE_HOST_PORT}:8000"
+    environment:
+      - DB_HOST=vetbot_postgres
+      - DB_PORT=${DB_PORT_CONTAINER}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+    volumes:
+      - logs:/app/logs
+      - user_dialog_history:/app/user_dialog_history
+      - database_dumps:/app/database_data/dumps
+    networks:
+      - network
+      - agropredict_network
+    depends_on:
+      - vetbot_postgres
+
+  mcp-server:
+    image: vetretro-mcp-image
+    ports:
+      - "8765:8765"
+    environment:
+      - DB_HOST=vetbot_postgres
+      - DB_PORT=${DB_PORT_CONTAINER}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - OPENAI_API_KEY=${VSEGPT_API_KEY}
+      - OPENAI_API_BASE=${VSEGPT_BASE_URL}
+      - LOG_LEVEL=INFO
+    volumes:
+      # Только для данных, не для кода приложения
+      - agent-workspace-data:/app/agent-workspace
+    networks:
+      - network
+    depends_on:
+      - vetbot_postgres
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8765/health').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # VetRetro Web Backend - FastAPI + Langchain backend for veterinary investigations
+  web-backend:
+    image: vetretro-backend-image
+    ports:
+      - "0.0.0.0:8001:8000"
+    environment:
+      - LLM_API_KEY=${OPENROUTER_API_KEY}
+      - LLM_API_BASE=${LLM_API_BASE:-https://openrouter.ai/api/v1}
+      # - LLM_API_KEY=${VSEGPT_API_KEY}
+      # - LLM_API_BASE=${VSEGPT_BASE_URL:-https://api.vsegpt.ru/v1}
+      # - LLM_MODEL=${LLM_MODEL:-minimax/minimax-m2}
+      - API_KEY=${API_KEY}
+      - VETRETRO_MCP_URL=http://mcp-server:8765
+      - INVESTIGATIONS_PATH=/agent-workspace/investigations
+      - AGENT_WORKSPACE_PATH=/agent-workspace
+      - DB_HOST=vetbot_postgres
+      - DB_PORT=${DB_PORT_CONTAINER}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=true
+    volumes:
+      # Только для данных, не для кода приложения
+      - agent-workspace-data:/agent-workspace  # Тот же том, что и в mcp-server
+    networks:
+      - network
+    depends_on:
+      - vetbot_postgres
+      - mcp-server
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    ports:
+      - "0.0.0.0:3000:8080"
+    environment:
+      - 'OLLAMA_BASE_URL=http://app:8000/v1'
+      - 'OLLAMA_API_BASE_URL=http://app:8000/v1'
+      - 'ENABLE_MODEL_FILTER=True'
+      - 'MODEL_FILTER_LIST=INLINE Vet-bot'
+      - 'WEBUI_NAME=INLINE VetBot'
+    volumes:
+      - webui_data:/app/backend/data
+    networks:
+      - network
+    depends_on:
+      - app
+
+volumes:
+  postgres_volume:
+  logs:
+  user_dialog_history:
+  webui_data:
+  database_dumps:
+  # Для данных агента
+  agent-workspace-data:
+
+networks:
+  network:
+    driver: overlay
+  agropredict_network:
+    external: true
+    name: agropredict-network

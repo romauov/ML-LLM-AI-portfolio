@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vetretro-backend"
+version = "0.1.0"
+description = "VetRetro Web Backend - FastAPI + Langchain"
+requires-python = ">=3.11"
+authors = [
+    {name = "VetRetro Team"}
+]
+readme = "README.md"
+
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "python-dotenv>=1.0.0",
+
+    # Langchain core
+    "langchain>=0.1.0",
+    "langchain-openai>=0.0.5",
+    "langserve>=0.0.30",
+
+    # MCP интеграция
+    "mcp>=1.0.0",
+    "httpx>=0.25.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

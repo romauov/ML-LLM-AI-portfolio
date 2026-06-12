@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# PyCharm
+.idea/
+.vscode/
+
+# Data
+storage/
+!storage/.gitkeep
+
+# llm agents
+QWEN.md

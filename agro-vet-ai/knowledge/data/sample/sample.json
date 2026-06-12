@@ -1,0 +1,36 @@
+{
+  "_comment": "Sample RAG corpus data. Full corpus (200+ sources) is excluded from git due to size (~700 MB). Managed via DVC in production.",
+  "articles": [
+    {
+      "title": "Роль фитомолекул в повышении сохранности несушек родительского стада бройлеров",
+      "link": "https://vicgroup.ru/publications/rol-fitomolekul-v-povyshenii-sokhrannosti-nesushek-roditelskogo-stada-broylerov/",
+      "date": "2025 г.",
+      "author": "Дорофеева С.Г., Молоканова О.В.",
+      "journal": "Комбикорма",
+      "full_title": "Роль фитомолекул в повышении сохранности несушек родительского стада бройлеров",
+      "content": "Селекция с акцентом на быстрый рост на протяжении многих поколений снизила способность родительских стад бройлеров производить высококачественные яйца в больших количествах и отрицательно сказалась на здоровье кур-несушек. Как показывают практика кормления птицы и поиск решений по улучшению здоровья кишечника, для идеального усвоения питательных веществ из корма и достижения генетического потенциала по продуктивности и сохранности можно использовать различные методы кормления и альтернативные препараты на основе фитоэкстрактов и эфирных масел с антибактериальным эффектом."
+    }
+  ],
+  "books": [
+    {
+      "pages": [
+        {
+          "page": 1,
+          "text": "This is a sample page from a veterinary textbook used as RAG source for the multi-agent AI system.",
+          "images": []
+        },
+        {
+          "page": 2,
+          "text": "The full corpus includes 200+ sources: poultry disease reference, swine disease reference, pharmacological guides, and scientific articles.",
+          "images": []
+        }
+      ],
+      "model": "gpt-4o",
+      "usage_info": {
+        "prompt_tokens": 150,
+        "completion_tokens": 50
+      },
+      "text": "Sample veterinary textbook page for RAG retrieval demonstration."
+    }
+  ]
+}

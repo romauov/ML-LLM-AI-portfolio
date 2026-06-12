@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "vetretro": {
+      "command": "/path/to/venv/bin/python3",
+      "args": ["run_stdio.py"],
+      "cwd": "/path/to/mcp-server",
+      "env": {
+        "OPENAI_API_KEY": "{{VSEGPT_API_KEY}}",
+        "OPENAI_API_BASE": "https://api.vsegpt.ru/v1",
+        "DB_HOST": "{{DB_HOST}}",
+        "DB_PORT": "5432",
+        "DB_NAME": "{{DB_NAME}}",
+        "DB_USER": "{{DB_USER}}",
+        "DB_PASSWORD": "{{DB_PASSWORD}}",
+        "SIMILARITY_THRESHOLD": "0.6",
+        "LOG_LEVEL": "INFO",
+        "http_proxy": "",
+        "https_proxy": "",
+        "HTTP_PROXY": "",
+        "HTTPS_PROXY": "",
+        "all_proxy": "",
+        "ALL_PROXY": ""
+      }
+    }
+  }
+}
